@@ -41,7 +41,7 @@ jobs:
     steps:
     - name: Repository checkout
       uses: actions/checkout@v2
-    - name: npm install
-      uses: ng-easy/npm-install@v1
+    - name: Setup node
+      uses: actions/setup-node@v2
     - name: npm build
       run: npm run build
