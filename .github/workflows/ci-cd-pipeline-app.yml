@@ -58,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Mensaje
-        if: ${{ succes() }}
+        if: ${{ success() }}
         env:
           MENSAJE_EXITO: DESPLIEGUE PRODUCCIÓN
         run: echo "::set-output name=respuesta::${MENSAJE_EXITO}"
