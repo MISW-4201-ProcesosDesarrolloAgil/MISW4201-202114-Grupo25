@@ -12,9 +12,7 @@ on:
 jobs:
   build:
     name: Backend
-
     runs-on: ubuntu-latest
-
     steps:
     - name: Repository checkout
       uses: actions/checkout@v2
@@ -39,9 +37,7 @@ jobs:
         #pytest
   build1:
     name: Frontend
-
     runs-on: ubuntu-latest
-
     steps:
     - name: npm install
       uses: ng-easy/npm-install@v1
