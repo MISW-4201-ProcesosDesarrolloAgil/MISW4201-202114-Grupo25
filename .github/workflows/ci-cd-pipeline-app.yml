@@ -54,7 +54,7 @@ jobs:
 
   build2:
     name: CD-AWS
-    needs: [CI-Backend, CI-Frontend]
+    needs: [build, build1]
     runs-on: ubuntu-latest
     steps:
       - name: Mensaje
