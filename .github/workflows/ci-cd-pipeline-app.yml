@@ -43,8 +43,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Respository checkout1
-      uses: actions/checkout@v2
     - name: npm install
       uses: ng-easy/npm-install@v1
       run: npm run build
