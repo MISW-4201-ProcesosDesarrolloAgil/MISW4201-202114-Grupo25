@@ -44,4 +44,5 @@ jobs:
     - name: Setup node
       uses: actions/setup-node@v2
     - name: npm build
-      run: npm run build
+    - run: cd front-end
+    - run: npm run build
