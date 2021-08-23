@@ -45,7 +45,9 @@ jobs:
       uses: actions/setup-node@v2
     - name: npm install
       run: |
-        #
+        # move to front-end folder
         cd front-end
-        #
+        # install dependences
         npm install
+        # angular install
+        npm install -g @angular/cli
