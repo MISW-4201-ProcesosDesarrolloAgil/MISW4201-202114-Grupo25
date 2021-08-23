@@ -4,7 +4,6 @@
     <list default="true" id="472c731b-49cd-4ebc-9a27-674ada7f7618" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.github/workflows/ci-cd-pipeline-app.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/ci-cd-pipeline-app.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/package-lock.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
