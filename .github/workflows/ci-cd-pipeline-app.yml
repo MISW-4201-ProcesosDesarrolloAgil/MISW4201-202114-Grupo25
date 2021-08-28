@@ -51,6 +51,8 @@ jobs:
         npm install
         # angular install
         npm install -g @angular/cli
+    - name: Run Unit test
+      run: npm run test -- --configuration=ci
 
   build2:
     name: CD-AWS
