@@ -46,13 +46,16 @@ jobs:
     - name: npm install
       run: |
         # move to front-end folder
-        cd front-end
+        cd front-end/tutorial-canciones
         # install dependences
         npm install
         # angular install
         npm install -g @angular/cli
     - name: Run Unit test
-      run: npm test
+      run: |
+        # move to front-end folder
+        cd front-end/tutorial-canciones
+        npm test
 
   build2:
     name: CD-AWS
