@@ -5,9 +5,12 @@ name: Ionic Angular and Python application
 
 on:
   push:
-    branches: [ develop ]    
+    branches: [ feature/**, develop ]
   pull_request:
     types:
+      - created
+      - assigned
+      - unassigned
       - labeled
       - unlabeled
       - synchronize
@@ -16,7 +19,7 @@ on:
       - ready_for_review
       - reopened
       - unlocked
-    branches: [ main ]
+    branches: [ release, main ]
 
 jobs:
   build:
