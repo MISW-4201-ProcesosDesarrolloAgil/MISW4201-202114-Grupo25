@@ -7,7 +7,16 @@ on:
   push:
     branches: [ develop ]    
   pull_request:
-    branches: [ develop, release, main ]
+    types:
+      - labeled
+      - unlabeled
+      - synchronize
+      - opened
+      - edited
+      - ready_for_review
+      - reopened
+      - unlocked
+    branches: [ main ]
 
 jobs:
   build:
