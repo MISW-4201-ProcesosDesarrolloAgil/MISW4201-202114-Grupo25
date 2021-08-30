@@ -5,7 +5,7 @@ name: Ionic Angular and Python application
 
 on:
   push:
-    branches: [ feature/** ]
+    branches: [ develop ]
   pull_request:
     branches: [ develop, release, master ]
 
