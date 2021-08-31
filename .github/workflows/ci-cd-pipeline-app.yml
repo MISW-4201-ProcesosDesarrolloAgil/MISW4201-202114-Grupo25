@@ -48,6 +48,15 @@ jobs:
     - name: Unit test python
       run: |
         pytest
+    - name: Deploy to Heroku
+      env:
+        herokuApiToken: ${{ '909c1594-900d-4858-b62e-297caf026586' }}
+        herokuAppName: ${{ 'powerful-reef-77657' }}
+      if: github.ref == 'refs/heads/develop' && job.status == 'success'
+      run: |
+        git remote add heroku https://heroku:$herokuApiToken@git.heroku.com/$herokuAppName.git
+        git push heroku HEAD:develop -f
+
   build1:
     name: CI-Frontend
     runs-on: ubuntu-latest
@@ -64,14 +73,6 @@ jobs:
         npm install
         # angular install
         npm install -g @angular/cli
-    - name: Deploy to Heroku
-      env:
-        herokuApiToken: ${{ '909c1594-900d-4858-b62e-297caf026586' }}
-        herokuAppName: ${{ 'powerful-reef-77657' }}
-      if: github.ref == 'refs/heads/develop' && job.status == 'success'
-      run: |
-        git remote add heroku https://heroku:$herokuApiToken@git.heroku.com/$herokuAppName.git
-        git push heroku HEAD:develop -f
 
   build2:
     name: CD-AWS
