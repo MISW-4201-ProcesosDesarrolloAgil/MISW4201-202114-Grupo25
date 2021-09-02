@@ -1,15 +1,26 @@
 <div class="container">
   <div class="row">
     <div class="col-12 text-center mb-2">
-      <label class="fs-4 fw-bold">Canción: {{ cancion?.titulo }}</label>
+      <label class="fs-4 fw-bold ms-2 me-2"
+        >Canción: {{ cancion?.titulo }}</label
+      >
       <button
         *ngIf="cancion"
         type="button"
-        class="btn btn-outline-success ms-3 me-2"
+        class="btn btn-outline-success ms-1 me-1"
         (click)="goToEdit()"
         title="Editar canción"
       >
         <i class="bi bi-pencil-square"></i>
+      </button>
+      <button
+        *ngIf="cancion"
+        type="button"
+        class="btn btn-outline-danger ms-1 me-1"
+        (click)="compartirCancion()"
+        title="Compartir canción"
+      >
+        <i class="bi bi-share"></i>
       </button>
       <button
         *ngIf="cancion"
@@ -69,4 +80,6 @@
       </table>
     </div>
   </div>
+
+  <app-modal #modal [modalConfig]="modalConfig"> Prueba </app-modal>
 </div>
