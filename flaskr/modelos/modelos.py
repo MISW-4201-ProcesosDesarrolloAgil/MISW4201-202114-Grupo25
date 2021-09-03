@@ -1,10 +1,10 @@
-from flask_sqlalchemy import SQLAlchemy
+
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow import fields
 import enum
 
-
-db = SQLAlchemy()
+# Database
+from db import db
 
 albumes_canciones = db.Table('album_cancion',
     db.Column('album_id', db.Integer, db.ForeignKey('album.id'), primary_key = True),
