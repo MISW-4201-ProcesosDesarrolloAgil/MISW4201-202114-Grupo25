@@ -1,0 +1,24 @@
+<ng-template #modal>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ modalConfig.modalTitle }}</h5>
+  </div>
+  <div class="modal-body">
+    <ng-content></ng-content>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-success"
+            (click)="dismiss()"
+            *ngIf="!!modalConfig.dismissButtonLabel"
+            [disabled]="modalConfig.disableDismissButton !== undefined && modalConfig.disableDismissButton()">
+      {{ modalConfig.dismissButtonLabel }}
+    </button>
+    <button type="button"
+            class="btn btn-danger"
+            (click)="close()"
+            *ngIf="!!modalConfig.closeButtonLabel"
+            [disabled]="modalConfig.disableCloseButton !== undefined && modalConfig.disableCloseButton()">
+      {{ modalConfig.closeButtonLabel }}
+    </button>
+  </div>
+</ng-template>

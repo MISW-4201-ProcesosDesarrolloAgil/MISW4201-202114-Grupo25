@@ -1,13 +1,24 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# Github actions for CI and CD workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
 name: Ionic Angular and Python application
 
 on:
   push:
-    branches: [ main ]
+    branches: [ feature/** ]
   pull_request:
-    branches: [ main ]
+    types:
+      - assigned
+      - unassigned
+      - labeled
+      - unlabeled
+      - synchronize
+      - opened
+      - edited
+      - ready_for_review
+      - reopened
+      - unlocked
+    branches: [ develop, release, main ]
 
 jobs:
   build:
@@ -32,9 +43,9 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    #- name: Test with pytest
-      #run: |
-        #pytest
+    - name: Unit test python
+      run: |
+        pytest
   build1:
     name: CI-Frontend
     runs-on: ubuntu-latest
@@ -51,11 +62,6 @@ jobs:
         npm install
         # angular install
         npm install -g @angular/cli
-    - name: Run Unit test
-      run: |
-        # move to front-end folder
-        cd front-end/tutorial-canciones
-        npm test
 
   build2:
     name: CD-AWS
