@@ -11,9 +11,9 @@ album_schema = AlbumSchema()
 
 class VistaCanciones(Resource):
 
-    def post(self, id_usuario):
+    def post(self):
         nueva_cancion = Cancion(titulo=request.json["titulo"], minutos=request.json["minutos"], segundos=request.json["segundos"], interprete=request.json["interprete"])
-        usuario = Usuario.query.get_or_404(id_usuario)
+        usuario = Usuario.query.get_or_404(request.json["id_usuario"])
         usuario.canciones.append(nueva_cancion)
 
         try:
