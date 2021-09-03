@@ -11,10 +11,17 @@ album_schema = AlbumSchema()
 
 class VistaCanciones(Resource):
 
-    def post(self):
+    def post(self, id_usuario):
         nueva_cancion = Cancion(titulo=request.json["titulo"], minutos=request.json["minutos"], segundos=request.json["segundos"], interprete=request.json["interprete"])
-        db.session.add(nueva_cancion)
-        db.session.commit()
+        usuario = Usuario.query.get_or_404(id_usuario)
+        usuario.canciones.append(nueva_cancion)
+
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            return 'El usuario ya tiene una canción con dicho nombre',409
+
         return cancion_schema.dump(nueva_cancion)
 
     def get(self):
