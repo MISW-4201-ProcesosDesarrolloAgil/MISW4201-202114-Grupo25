@@ -47,8 +47,19 @@ class TestModeloComentario(unittest.TestCase):
         """
 
         descripcion = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae cursus nibh. Donec elementum at."
-        db.session.add(ComentarioModel(id=1,descripcion=descripcion))
-
+        db.session.add(ComentarioModel(id=1, descripcion=descripcion))
+        db.session.commit()
         result = db.session.query(ComentarioModel)
         self.assertEqual(result[0].id, 1)
         self.assertEqual(result[0].descripcion, descripcion)
+
+    def test_comentario_vacio(self):
+        """
+        test de creacion de un comentario vacio
+        :return:
+        """
+        descripcion = ""
+        try:
+            db.session.add(ComentarioModel(id=2, descripcion=descripcion))
+        except Exception as e:
+            self.assertIsInstance(e, ValueError)
