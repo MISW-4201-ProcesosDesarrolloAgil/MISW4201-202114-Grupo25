@@ -15,10 +15,12 @@ class ComentarioModel(db.Model):
     """
     Comentario representa el modelo de un comentario de una publicacion.
     """
-    __tablename__ = 'comentarios'
+    __tablename__ = 'comentario'
     id = db.Column(db.Integer, primary_key=True)
     descripcion = db.Column(db.String(length=1000), nullable=False)
     fecha_creacion = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    album_id = db.Column(db.Integer, db.ForeignKey('album.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
     # ToDo: Incluir relaciones
 
     @validates('descripcion')
@@ -35,4 +37,4 @@ class ComentarioSchema(SQLAlchemyAutoSchema):
     """
     class Meta:
         model = ComentarioModel
-        # ToDo: Incluir relaciones
+        include_relationships = False

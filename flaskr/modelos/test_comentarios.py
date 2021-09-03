@@ -5,6 +5,7 @@ from flaskr import create_app
 
 # Modelo
 from flaskr.modelos.comentarios import ComentarioModel
+from flaskr.modelos.modelos import Album
 
 # Database
 from flaskr.modelos.database import db
@@ -32,6 +33,14 @@ class TestModeloComentario(unittest.TestCase):
         self.create_app()
         db.init_app(self.app)
         db.create_all()
+        db.session.add(Album(
+            id=1,
+            titulo='titulo_test',
+            anio=2021,
+            descripcion="Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            medio = 'CD',
+            usuario= 1,
+            ))
 
     def tearDown(self):
         """

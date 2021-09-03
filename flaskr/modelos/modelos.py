@@ -3,6 +3,8 @@ from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow import fields
 import enum
 
+from flaskr.modelos.comentarios import ComentarioModel
+
 # Database
 from flaskr.modelos.database import db
 
@@ -24,6 +26,7 @@ class Medio(enum.Enum):
    CD = 3
 
 class Album(db.Model):
+    __tablname__ = 'album'
     id = db.Column(db.Integer, primary_key=True)
     titulo = db.Column(db.String(128))
     anio = db.Column(db.Integer)
@@ -31,12 +34,14 @@ class Album(db.Model):
     medio = db.Column(db.Enum(Medio))
     usuario = db.Column(db.Integer, db.ForeignKey("usuario.id"))
     canciones = db.relationship('Cancion', secondary = 'album_cancion', back_populates="albumes")
-    
+    comentarios = db.relationship('ComentarioModel')
+
 class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(50))
     contrasena = db.Column(db.String(50))
     albumes = db.relationship('Album', cascade='all, delete, delete-orphan')
+    comentarios = db.relationship('ComentarioModel')
 
 class EnumADiccionario(fields.Field):
     def _serialize(self, value, attr, obj, **kwargs):
