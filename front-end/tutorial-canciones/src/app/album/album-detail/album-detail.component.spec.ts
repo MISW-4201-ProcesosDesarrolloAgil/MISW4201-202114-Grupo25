@@ -4,6 +4,7 @@ import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
 import { AlbumDetailComponent } from './album-detail.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('AlbumDetailComponent', () => {
   let component: AlbumDetailComponent;
@@ -11,9 +12,9 @@ describe('AlbumDetailComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AlbumDetailComponent ]
-    })
-    .compileComponents();
+      declarations: [AlbumDetailComponent],
+      imports: [RouterTestingModule]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
