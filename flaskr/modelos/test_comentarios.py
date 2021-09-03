@@ -1,9 +1,13 @@
 # Pruebas para el modelo comentario
 
-#Modelo
-from comentarios import ComentarioModel
+# Applicacion
+from flaskr import create_app
+
+# Modelo
+from flaskr.modelos.comentarios import ComentarioModel
+
 # Database
-from db import db
+from flaskr.modelos.database import db
 
 # Utils
 import unittest
@@ -13,28 +17,38 @@ class TestModeloComentario(unittest.TestCase):
     """
     Pruebas para el modelo de comentarios
     """
+    def create_app(self):
+        """
+        creacion de aplicacion de pruebas
+        """
+        self.app = create_app('default')
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+
     def setUp(self):
         """
-
-        :return:
+        Configuracion de la base de datos
         """
-        pass
+        self.create_app()
+        db.init_app(self.app)
+        db.create_all()
 
     def tearDown(self):
         """
-
-        :return:
+        Limpia ambiente de pruebas
         """
-        pass
+        db.session.remove()
+        db.drop_all()
 
-    def test_comentario_creado(self):
+    def test_comentario_correcto(self):
         """
         test de creacion de un comentario de manera satisfactoria
         :return:
         """
-        db.session.add(ComentarioModel())
+
+        descripcion = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae cursus nibh. Donec elementum at."
+        db.session.add(ComentarioModel(id=1,descripcion=descripcion))
 
         result = db.session.query(ComentarioModel)
-
-        self.assertEqual(1, 1)
-
+        self.assertEqual(result[0].id, 1)
+        self.assertEqual(result[0].descripcion, descripcion)

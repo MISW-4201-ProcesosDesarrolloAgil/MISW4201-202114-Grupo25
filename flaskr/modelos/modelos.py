@@ -4,7 +4,7 @@ from marshmallow import fields
 import enum
 
 # Database
-from db import db
+from flaskr.modelos.database import db
 
 albumes_canciones = db.Table('album_cancion',
     db.Column('album_id', db.Integer, db.ForeignKey('album.id'), primary_key = True),
