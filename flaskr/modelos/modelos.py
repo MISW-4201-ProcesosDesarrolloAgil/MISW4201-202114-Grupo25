@@ -1,10 +1,8 @@
-from flask_sqlalchemy import SQLAlchemy
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow import fields
 import enum
-
-
-db = SQLAlchemy()
+from flaskr.modelos.database import db
+from sqlalchemy.orm import validates
 
 albumes_canciones = db.Table('album_cancion',
     db.Column('album_id', db.Integer, db.ForeignKey('album.id'), primary_key = True),
@@ -23,6 +21,12 @@ class Cancion(db.Model):
     usuario = db.Column(db.Integer, db.ForeignKey("usuario.id"))
     albumes = db.relationship('Album', secondary = 'album_cancion', back_populates="canciones")
     usuarios_compartidos = db.relationship('Usuario', secondary = 'usuario_cancion_compartida', back_populates="canciones_compartidas")
+
+    @validates('usuarios_compartidos')
+    def validate_usuarios_compartidos(self, key, value):
+        if value.id == self.usuario:
+            raise ValueError
+        return value
 
 class Medio(enum.Enum):
    DISCO = 1

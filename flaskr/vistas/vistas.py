@@ -20,7 +20,7 @@ class VistaCanciones(Resource):
             db.session.commit()
         except IntegrityError:
             db.session.rollback()
-            return 'El usuario ya tiene una canción con dicho nombre',409
+            return 'La canción ya se compartió con el usuario ',409
 
         return cancion_schema.dump(nueva_cancion)
 
