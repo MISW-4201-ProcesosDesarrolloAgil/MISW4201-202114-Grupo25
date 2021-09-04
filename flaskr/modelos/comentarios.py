@@ -37,4 +37,5 @@ class ComentarioSchema(SQLAlchemyAutoSchema):
     """
     class Meta:
         model = ComentarioModel
-        include_relationships = False
+        include_relationships = True
+        load_instance = True

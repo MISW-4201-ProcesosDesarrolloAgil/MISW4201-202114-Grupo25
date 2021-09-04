@@ -23,4 +23,7 @@ api.add_resource(VistaAlbumsUsuario, '/usuario/<int:id_usuario>/albumes')
 api.add_resource(VistaAlbum, '/album/<int:id_album>')
 api.add_resource(VistaCancionesAlbum, '/album/<int:id_album>/canciones')
 
+
+from flaskr.vistas.comentario import VistaComentarios
+api.add_resource(VistaComentarios, '/album/<int:album_id>/comentario')
 jwt = JWTManager(app)
