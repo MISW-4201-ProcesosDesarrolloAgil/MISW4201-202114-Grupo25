@@ -5,7 +5,7 @@ from .vistas import VistaCanciones, VistaCancion, VistaSignIn, VistaAlbum, Vista
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS, cross_origin
 
-app = create_app('default')
+app = create_app('default', 'sqlite:///ionic.db')
 app_context = app.app_context()
 app_context.push()
 

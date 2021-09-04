@@ -2,7 +2,6 @@
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow import fields
 import enum
-
 from flaskr.modelos.comentarios import ComentarioModel
 
 # Database

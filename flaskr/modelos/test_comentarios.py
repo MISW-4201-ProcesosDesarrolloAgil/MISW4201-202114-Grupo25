@@ -12,6 +12,7 @@ from flaskr.modelos.database import db
 
 # Utils
 import unittest
+from flaskr.tests.data import seed_data
 
 
 class TestModeloComentario(unittest.TestCase):
@@ -22,7 +23,7 @@ class TestModeloComentario(unittest.TestCase):
         """
         creacion de aplicacion de pruebas
         """
-        self.app = create_app('default')
+        self.app = create_app('default', 'sqlite:///test.db')
         self.app_context = self.app.app_context()
         self.app_context.push()
 
@@ -33,14 +34,7 @@ class TestModeloComentario(unittest.TestCase):
         self.create_app()
         db.init_app(self.app)
         db.create_all()
-        db.session.add(Album(
-            id=1,
-            titulo='titulo_test',
-            anio=2021,
-            descripcion="Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-            medio = 'CD',
-            usuario= 1,
-            ))
+        seed_data()
 
     def tearDown(self):
         """
