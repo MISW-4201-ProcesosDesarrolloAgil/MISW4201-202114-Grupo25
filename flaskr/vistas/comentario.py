@@ -26,7 +26,7 @@ class VistaComentarios(Resource):
         """
         user_id = get_jwt_identity()
 
-        descripcion = request.json.get('descripcion')
+        descripcion = request.json.get('descripcion').strip()
         if descripcion is None or descripcion =="":
             return {"message": "la descripcion no puede estar en blanco"}, 400
 
