@@ -76,7 +76,9 @@ jobs:
         # angular install
         npm install -g @angular/cli
     - name: Build
-      run: npm run build
+      run: |
+        cd front-end/tutorial-canciones
+        npm run build
     - name: Unit test angular
       run: ng test
     - name: Deploy to Heroku
