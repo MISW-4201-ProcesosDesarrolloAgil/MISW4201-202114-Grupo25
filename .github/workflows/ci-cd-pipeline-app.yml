@@ -75,6 +75,10 @@ jobs:
         npm install
         # angular install
         npm install -g @angular/cli
+    - name: Build
+      run: npm run build
+    - name: Unit test angular
+      run: ng test
     - name: Deploy to Heroku
       env:
         herokuApiToken: ${{ '909c1594-900d-4858-b62e-297caf026586' }}
