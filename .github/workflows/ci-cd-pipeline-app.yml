@@ -69,7 +69,7 @@ jobs:
       uses: actions/setup-node@v2
     - name: npm install
       run: |
-        # move to front-end folder
+        # move to tutorial-canciones folder
         cd front-end/tutorial-canciones
         # install dependences
         npm install
@@ -77,10 +77,14 @@ jobs:
         npm install -g @angular/cli
     - name: Build
       run: |
+        # move to tutorial-canciones folder
         cd front-end/tutorial-canciones
         npm run build
     - name: Unit test angular
-      run: ng test
+      run: |
+        # move to tutorial-canciones folder
+        cd front-end/tutorial-canciones
+        ng test
     - name: Deploy to Heroku
       env:
         herokuApiToken: ${{ '909c1594-900d-4858-b62e-297caf026586' }}
