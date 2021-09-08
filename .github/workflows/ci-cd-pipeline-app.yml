@@ -77,16 +77,6 @@ jobs:
     - name: Print nice message on completion of CI Pipeline
       run: echo "CI Pipeline part finished successfully"
 
-
-    - name: Deploy to Heroku
-      env:
-        herokuApiToken: ${{ '909c1594-900d-4858-b62e-297caf026586' }}
-        herokuAppName: ${{ 'powerful-reef-77657' }}
-      if: github.ref == 'refs/heads/develop' && job.status == 'success'
-      run: |
-        git remote add heroku https://heroku:$herokuApiToken@git.heroku.com/$herokuAppName.git
-        git push heroku HEAD:develop -f
-
   build2:
     name: CD-AWS
     needs: [ build ]
@@ -157,8 +147,3 @@ jobs:
       run: |
         git remote add heroku https://heroku:$herokuApiToken@git.heroku.com/$herokuAppName.git
         git push heroku HEAD:develop -f
-
-
-
-
-
