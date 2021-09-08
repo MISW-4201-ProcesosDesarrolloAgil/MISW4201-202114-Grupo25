@@ -1,0 +1,16 @@
+.app-footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 2;
+  box-shadow: 0px -4px 15px -3px rgb(142 142 142);
+  padding: 16px;
+  background: white;
+}
+
+p {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

@@ -1,16 +1,31 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light app-header">
   <div class="container-fluid">
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+    <a class="navbar-brand mx-3 app-header__logo" (click)="goTo('logIn')"
+      >IONIC</a
+    >
+    <button
+      class="navbar-toggler app-header__mobile-menu"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarTogglerDemo01"
+      aria-controls="navbarTogglerDemo01"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <i class="bi bi-list"></i>
     </button>
-    <div class="collapse navbar-collapse">
-      <a class="navbar-brand mx-3" (click)="goTo('logIn')">Tutorial canciones</a>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
           <a class="nav-link" (click)="goTo('album')">Álbumes</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" (click)="goTo('cancion')">Canciones</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link">{{this.userName}}</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" (click)="goTo('logIn')">Salir</a>
