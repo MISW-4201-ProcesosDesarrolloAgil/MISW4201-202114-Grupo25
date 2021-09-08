@@ -108,7 +108,7 @@ jobs:
 
   build1:
     name: CI-Frontend
-    needs: [ build-backend-python ]
+    needs: [ deploy-backend-python ]
     runs-on: ubuntu-latest
     steps:
     #- name: Repository checkout
