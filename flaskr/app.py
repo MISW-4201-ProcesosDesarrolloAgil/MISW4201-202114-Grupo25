@@ -1,9 +1,29 @@
 from flaskr import create_app
 from flask_restful import Api
 from .modelos import db
-from .vistas import VistaCanciones, VistaCancion, VistaSignIn, VistaAlbum, VistaAlbumsUsuario, VistaCancionesAlbum, VistaLogIn, VistaAlbumesCanciones
+from .vistas import VistaCanciones, VistaCancion, VistaSignIn, VistaAlbum, VistaAlbumsUsuario, VistaCancionesAlbum, \
+    VistaLogIn, VistaAlbumesCanciones
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS, cross_origin
+from flask import Flask
+from flask_restplus import Resource, Api
+
+application = Flask(__name__)
+api = Api(application,
+          version='0.1',
+          title='Our sample API',
+          description='This is our sample API',
+          )
+
+
+@api.route('/hello')
+class HelloWorld(Resource):
+    def get(self):
+        return {'hello': 'world'}
+
+
+if __name__ == '__main__':
+    application.run(debug=True)
 
 app = create_app('default')
 app_context = app.app_context()
