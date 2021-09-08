@@ -140,7 +140,7 @@ jobs:
        # ng test
 
     - name: Generate deployment package
-      run: zip -r deploy.zip ./dist/*
+      run: zip -r deploy.zip . -x '*.git*'
 
     - name: Beanstalk Deploy
       uses: einaregilsson/beanstalk-deploy@v18
