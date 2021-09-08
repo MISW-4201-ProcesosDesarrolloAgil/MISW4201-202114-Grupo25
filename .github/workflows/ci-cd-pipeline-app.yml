@@ -95,8 +95,10 @@ jobs:
       uses: actions/checkout@v2
     - run: |
         git fetch --prune --unshallow
+
     - name: Setup node
       uses: actions/setup-node@v2
+
     - name: npm install
       run: |
         # move to tutorial-canciones folder
@@ -105,16 +107,19 @@ jobs:
         npm install
         # angular install
         npm install -g @angular/cli
+
     - name: Build
       run: |
         # move to tutorial-canciones folder
         cd front-end/tutorial-canciones
         npm run build
+
     - name: Unit test angular
       run: |
         # move to tutorial-canciones folder
         cd front-end/tutorial-canciones
         ng test
+
     - name: Deploy to Heroku
       env:
         herokuApiToken: ${{ '909c1594-900d-4858-b62e-297caf026586' }}
@@ -126,12 +131,30 @@ jobs:
 
   build2:
     name: CD-AWS
-    needs: [build, build1]
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - name: Mensaje
-        if: ${{ success() }}
-        env:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ env.AWS_ACCES_KEY }}
+        aws-secret-access-key: ${{ env.AWS_SECRET_KEY }}
+        aws-region: ${{env.AWS_REGION_NAME}}
+
+    - name: Create new ElasticBeanstalk Application Version
+      run: |
+        aws elasticbeanstalk create-application-version \
+        --application-name ${{ env.EB_APPLICATION_NAME }} \
+        --source-bundle S3Bucket="${{ env.EB_PACKAGE_S3_BUCKET_NAME }}",S3Key="${{ env.DEPLOY_PACKAGE_NAME }}" \
+        --version-label "Ver-${{ github.sha }}" \
+        --description "CommitSHA-${{ github.sha }}"
+
+    - name: Deploy new Application Version
+      run: aws elasticbeanstalk update-environment --environment-name ${{ env.EB_ENVIRONMENT_NAME }} --version-label "Ver-${{ github.sha }}"
+
+    - name: Mensaje
+      if: ${{ success() }}
+      env:
           MENSAJE_EXITO: DESPLIEGUE PRODUCCIÓN
         run: echo "::set-output name=respuesta::${MENSAJE_EXITO}"
 
