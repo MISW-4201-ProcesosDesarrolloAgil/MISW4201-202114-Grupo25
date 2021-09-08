@@ -3,9 +3,9 @@
 
 name: Ionic Angular and Python application
 env:
-  EB_PACKAGE_S3_BUCKET_NAME: "ionic-flask-backend"
-  EB_APPLICATION_NAME: "Ionicbackend"
-  EB_ENVIRONMENT_NAME: "Ionicbackend-env"
+  EB_PACKAGE_S3_BUCKET_NAME: "ionic-python-bucket"
+  EB_APPLICATION_NAME: "ionic-python-ebs"
+  EB_ENVIRONMENT_NAME: "Ionicpythonebs-env"
   DEPLOY_PACKAGE_NAME: "flask-app-${{ github.sha }}.zip"
   AWS_REGION_NAME:     "us-east-1"
   AWS_ACCES_KEY:       "AKIA6F37L2P7JXZ3U5WC"
@@ -29,7 +29,7 @@ on:
     branches: [ develop, release, main ]
 
 jobs:
-  build:
+  build-backend-python:
     name: CI-Backend
     runs-on: ubuntu-latest
     steps:
@@ -77,9 +77,9 @@ jobs:
     - name: Print nice message on completion of CI Pipeline
       run: echo "CI Pipeline part finished successfully"
 
-  build2:
+  deploy-backend-python:
     name: CD-AWS
-    needs: [ build ]
+    needs: [ build-backend-python ]
     runs-on: ubuntu-latest
     steps:
     - name: Configure AWS Credentials
@@ -108,12 +108,13 @@ jobs:
 
   build1:
     name: CI-Frontend
+    needs: [ build-backend-python ]
     runs-on: ubuntu-latest
     steps:
-    - name: Repository checkout
-      uses: actions/checkout@v2
-    - run: |
-        git fetch --prune --unshallow
+    #- name: Repository checkout
+    #  uses: actions/checkout@v2
+    # - run: |
+    #    git fetch --prune --unshallow
 
     - name: Setup node
       uses: actions/setup-node@v2
