@@ -74,7 +74,7 @@ pipeline {
                 publishHTML (target : [allowMissing: false,
                     alwaysLinkToLastBuild: true,
                     keepAll: true,
-                    reportDir: 'flaskr/htmlcov/',
+                    reportDir: 'htmlcov/',
                     reportFiles: 'index.html',
                     reportName: 'Coverage Report',
                     reportTitles: 'Coverage Report']
