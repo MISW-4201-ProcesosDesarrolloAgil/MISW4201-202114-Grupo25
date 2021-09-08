@@ -145,9 +145,9 @@ jobs:
     - name: Beanstalk Deploy
       uses: einaregilsson/beanstalk-deploy@v18
       with:
-        aws-access-key-id: ${{ env.AWS_ACCES_KEY }}
-        aws-secret-access-key: ${{ env.AWS_SECRET_KEY }}
-        aws-region: ${{env.AWS_REGION_NAME}}
+        aws_access_key: ${{ env.AWS_ACCES_KEY }}
+        aws_secret_key: ${{ env.AWS_SECRET_KEY }}
+        region: ${{env.AWS_REGION_NAME}}
         application_name: ${{ env.EB_WEB_APPLICATION_NAME }}
         environment_name: ${{ env.EB_WEB_ENVIRONMENT_NAME }}
         version_label: 1
