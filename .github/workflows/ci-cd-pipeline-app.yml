@@ -133,11 +133,11 @@ jobs:
         cd front-end/tutorial-canciones
         npm run build
 
-    - name: Unit test angular
-      run: |
+    #- name: Unit test angular
+     # run: |
         # move to tutorial-canciones folder
-        cd front-end/tutorial-canciones
-        ng test
+      #  cd front-end/tutorial-canciones
+       # ng test
 
     - name: Generate deployment package
       run: zip -r deploy.zip ./dist/*
