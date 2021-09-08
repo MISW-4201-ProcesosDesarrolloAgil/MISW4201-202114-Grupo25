@@ -154,8 +154,5 @@ jobs:
         application_name: ${{ env.EB_WEB_APPLICATION_NAME }}
         environment_name: ${{ env.EB_WEB_ENVIRONMENT_NAME }}
         version_label: 2
-        deployment_package:
-          # move to tutorial-canciones folder
-          cd front-end/tutorial-canciones
-          deploy.zip
+        deployment_package: deploy.zip
 
