@@ -5,6 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
 from collections import OrderedDict
 import sys
+import logging
 
 cancion_schema = CancionSchema()
 usuario_schema = UsuarioSchema()
@@ -57,6 +58,9 @@ class VistaAlbumesCanciones(Resource):
 class VistaSignIn(Resource):
     
     def post(self):
+        usuario = Usuario.query.get(request.json["nombre"])
+        if usuario is not None:
+            return 'El usuario ' + str(usuario.nombre) + ' ya existe en el sistema.',409
         nuevo_usuario = Usuario(nombre=request.json["nombre"], contrasena=request.json["contrasena"])
         db.session.add(nuevo_usuario)
         db.session.commit()
@@ -155,7 +159,11 @@ class VistaCancionesUsuariosCompartidos(Resource):
 
     @jwt_required()
     def post(self, id_cancion):
-
+        """
+            Método post de la vista de usuarios compartidos a una canción.
+            Comparte una canción a un listado de usuarios
+            :return: string, status code 200
+        """
         if id_cancion > sys.maxsize:
             return 'El campo id_cancion solo permite int como valor.',400
 
@@ -183,30 +191,33 @@ class VistaCancionesUsuariosCompartidos(Resource):
             return 'Los usuarios compartidos no pueden ser removidos.',409 
 
         for i in range(len(cancion.usuarios_compartidos)): 
-            if cancion.usuarios_compartidos[i].id != nuevos_usuarios_compartidos[i]:
+            if cancion.usuarios_compartidos[i].nombre != nuevos_usuarios_compartidos[i]:
                 return 'Los usuarios compartidos no pueden ser removidos.',409 
         
         for i in range(len(cancion.usuarios_compartidos), len(nuevos_usuarios_compartidos)):
-            if isinstance(nuevos_usuarios_compartidos[i], int) == False:
-                return 'La lista de usuarios compartidos solo permite valores de tipo int.',400
-            if nuevos_usuarios_compartidos[i] > sys.maxsize:
-                return 'La lista de usuarios compartidos solo permite valores de tipo int.',400
-
-            newUser = Usuario.query.get(nuevos_usuarios_compartidos[i])
+            newUser = Usuario.query.filter_by(nombre = nuevos_usuarios_compartidos[i]).first()
             if newUser is None:
-                return "El usuario con id: " + str(nuevos_usuarios_compartidos[i]) + ", no existe.", 404
+                return "El usuario: " + nuevos_usuarios_compartidos[i] + ", no existe.", 404
             
             try:
                 cancion.usuarios_compartidos.append(newUser)
             except ValueError:
                 return 'La canción no puede ser compartida con el dueño de la misma.',409
+        try:
+            db.session.commit()
+        except Exception as e:
+            logging.info(e)
+            return {"error ": "internal error"}, 500
 
-        db.session.commit()
         return 'Canción compartida.'
 
     @jwt_required()
     def get(self, id_cancion):
-        
+        """
+            Método get de la vista de usuarios compartidos a una canción.
+            muestra el listado de usuarios que tienen compartida una canción
+            :return: array[], status code 200
+        """
         if id_cancion > sys.maxsize:
             return 'El campo id_cancion solo permite int como valor.',400
 
@@ -222,6 +233,6 @@ class VistaCancionesUsuariosCompartidos(Resource):
 
         usuarios_compartidos = []
         for i in range(len(cancion.usuarios_compartidos)):
-            usuarios_compartidos.append(cancion.usuarios_compartidos[i].id)
+            usuarios_compartidos.append(cancion.usuarios_compartidos[i].nombre)
 
         return {"usuarios_compartidos": usuarios_compartidos}
