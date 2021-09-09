@@ -58,7 +58,7 @@ class VistaAlbumesCanciones(Resource):
 class VistaSignIn(Resource):
     
     def post(self):
-        usuario = Usuario.query.get(request.json["nombre"])
+        usuario = Usuario.query.filter_by(nombre =request.json["nombre"]).first()
         if usuario is not None:
             return 'El usuario ' + str(usuario.nombre) + ' ya existe en el sistema.',409
         nuevo_usuario = Usuario(nombre=request.json["nombre"], contrasena=request.json["contrasena"])
