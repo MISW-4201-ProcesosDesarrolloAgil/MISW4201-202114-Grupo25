@@ -14,7 +14,7 @@ from flaskr.vistas import VistaCanciones, VistaCancion, VistaSignIn, VistaAlbum,
 # Utils
 from . import create_app
 
-app = create_app('sqlite:///ionic.db')
+app = create_app()
 
 app_context = app.app_context()
 app_context.push()
