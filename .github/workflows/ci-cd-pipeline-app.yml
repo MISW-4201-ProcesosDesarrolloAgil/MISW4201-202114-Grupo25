@@ -151,5 +151,3 @@ jobs:
         application_name: ${{ env.EB_WEB_APPLICATION_NAME }}
         environment_name: ${{ env.EB_WEB_ENVIRONMENT_NAME }}
         version_label: 1
-        deployment_package: deploy.zip
-
