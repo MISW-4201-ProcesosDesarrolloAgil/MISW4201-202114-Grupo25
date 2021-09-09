@@ -1,0 +1,10 @@
+@import '../../../common-styles/colors.scss';
+@import '../../../common-styles/common-components.scss';
+
+.album-details {
+
+  &__title {
+    color: $color-title;
+  }
+
+}
