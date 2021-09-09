@@ -1,12 +1,8 @@
-
 # Modelos
-from flaskr.modelos.modelos import Usuario, Cancion, Album
-from flaskr.modelos.comentarios import ComentarioModel
+from flaskr.modelos.modelos import Usuario, Album
 
-# Database
-from flaskr.modelos.database import db
 
-def seed_data():
+def seed_data(db):
     """seed_data se encarga de añadir datos de prueba con fines de testing"""
     db.session.add(Usuario(id=1, nombre="Enrique", contrasena="H0zksFgA8k6"))
     db.session.add(Usuario(id=2, nombre="Jacquette", contrasena="CMN3W3HoZe"))
