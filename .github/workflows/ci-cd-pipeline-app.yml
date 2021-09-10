@@ -5,6 +5,7 @@ name: Ionic Angular and Python application
 env:
   heroku_api_key: "1db8994c-c812-40a0-98e1-5bc5b8c83d5f"
   heroku_app_name: "ionic-grupo25"
+  heroku_app_name_front: "ionic-grupo25-front"
   heroku_email: "j.morenot@uniandes.edu.co"
 
 on:
@@ -47,7 +48,7 @@ jobs:
       uses: AkhileshNS/heroku-deploy@v3.12.12
       with:
         heroku_api_key: ${{ env.heroku_api_key }}
-        heroku_app_name: ${{ env.heroku_app_name }}
+        heroku_app_name: ${{ env.heroku_app_name_front }}
         heroku_email: ${{ env.heroku_email }}
         usedocker: true
         appdir: front-end/tutorial-canciones
