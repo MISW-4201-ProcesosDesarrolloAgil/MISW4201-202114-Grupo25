@@ -2,10 +2,15 @@
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
 name: Ionic Angular and Python application
+env:
+  heroku_api_key: "1db8994c-c812-40a0-98e1-5bc5b8c83d5f"
+  heroku_app_name: "ionic-grupo25"
+  heroku_app_name_front: "ionic-grupo25-front"
+  heroku_email: "j.morenot@uniandes.edu.co"
 
 on:
   push:
-    branches: [ feature/**, develop ]
+    branches: [ feature/** ]
   pull_request:
     types:
       - assigned
@@ -21,79 +26,36 @@ on:
     branches: [ develop, release, main ]
 
 jobs:
-  build:
+  deploy-backend-python:
     name: CI-Backend
     runs-on: ubuntu-latest
     steps:
-    - name: Repository checkout
-      uses: actions/checkout@v2
-    - run: |
-        git fetch --prune --unshallow
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
+    - uses: actions/checkout@v2
+    - name: Deploy Flask to Heroku
+      uses: AkhileshNS/heroku-deploy@v3.12.12
       with:
-        python-version: 3.9
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r flaskr/requirements.txt
-        pip install flake8 pytest
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Lint with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Unit test python
-      run: |
-        pytest
-    - name: Deploy to Heroku
-      env:
-        herokuApiToken: ${{ '909c1594-900d-4858-b62e-297caf026586' }}
-        herokuAppName: ${{ 'powerful-reef-77657' }}
-      if: github.ref == 'refs/heads/develop' && job.status == 'success'
-      run: |
-        git remote add heroku https://heroku:$herokuApiToken@git.heroku.com/$herokuAppName.git
-        git push heroku HEAD:develop -f
+        heroku_api_key: ${{ env.heroku_api_key }}
+        heroku_app_name: ${{ env.heroku_app_name }}
+        heroku_email: ${{ env.heroku_email }}
+        usedocker: true
+        appdir: flaskr
 
-  build1:
-    name: CI-Frontend
+  deploy-frontend-angular:
     runs-on: ubuntu-latest
     steps:
-    - name: Repository checkout
-      uses: actions/checkout@v2
-    - run: |
-        git fetch --prune --unshallow
-    - name: Setup node
-      uses: actions/setup-node@v2
-    - name: npm install
-      run: |
-        # move to front-end folder
-        cd front-end/tutorial-canciones
-        # install dependences
-        npm install
-        # angular install
-        npm install -g @angular/cli
-    - name: Deploy to Heroku
+    - uses: actions/checkout@v2
+    - name: Deploy Nginx to serve angular to Heroku
+      uses: AkhileshNS/heroku-deploy@v3.12.12
+      with:
+        heroku_api_key: ${{ env.heroku_api_key }}
+        heroku_app_name: ${{ env.heroku_app_name_front }}
+        heroku_email: ${{ env.heroku_email }}
+        usedocker: true
+        appdir: front-end/tutorial-canciones
+        docker_build_args: |
+          ENV_TYPE
       env:
-        herokuApiToken: ${{ '909c1594-900d-4858-b62e-297caf026586' }}
-        herokuAppName: ${{ 'powerful-reef-77657' }}
-      if: github.ref == 'refs/heads/develop' && job.status == 'success'
-      run: |
-        git remote add heroku https://heroku:$herokuApiToken@git.heroku.com/$herokuAppName.git
-        git push heroku HEAD:develop -f
-
-  build2:
-    name: CD-AWS
-    needs: [build, build1]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Mensaje
-        if: ${{ success() }}
-        env:
-          MENSAJE_EXITO: DESPLIEGUE PRODUCCIÓN
-        run: echo "::set-output name=respuesta::${MENSAJE_EXITO}"
+          ENV_TYPE: production
 
 
 
