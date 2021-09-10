@@ -5,7 +5,7 @@ name: Ionic Angular and Python application
 
 on:
   push:
-    branches: [ feature/** ]
+    branches: [ feature/**, develop ]
   pull_request:
     types:
       - assigned
@@ -27,6 +27,8 @@ jobs:
     steps:
     - name: Repository checkout
       uses: actions/checkout@v2
+    - run: |
+        git fetch --prune --unshallow
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
       with:
@@ -46,12 +48,23 @@ jobs:
     - name: Unit test python
       run: |
         pytest
+    - name: Deploy to Heroku
+      env:
+        herokuApiToken: ${{ '909c1594-900d-4858-b62e-297caf026586' }}
+        herokuAppName: ${{ 'powerful-reef-77657' }}
+      if: github.ref == 'refs/heads/develop' && job.status == 'success'
+      run: |
+        git remote add heroku https://heroku:$herokuApiToken@git.heroku.com/$herokuAppName.git
+        git push heroku HEAD:develop -f
+
   build1:
     name: CI-Frontend
     runs-on: ubuntu-latest
     steps:
     - name: Repository checkout
       uses: actions/checkout@v2
+    - run: |
+        git fetch --prune --unshallow
     - name: Setup node
       uses: actions/setup-node@v2
     - name: npm install
@@ -62,6 +75,14 @@ jobs:
         npm install
         # angular install
         npm install -g @angular/cli
+    - name: Deploy to Heroku
+      env:
+        herokuApiToken: ${{ '909c1594-900d-4858-b62e-297caf026586' }}
+        herokuAppName: ${{ 'powerful-reef-77657' }}
+      if: github.ref == 'refs/heads/develop' && job.status == 'success'
+      run: |
+        git remote add heroku https://heroku:$herokuApiToken@git.heroku.com/$herokuAppName.git
+        git push heroku HEAD:develop -f
 
   build2:
     name: CD-AWS

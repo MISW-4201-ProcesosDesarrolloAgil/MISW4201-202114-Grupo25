@@ -1,10 +1,8 @@
 # Modelos
+
 from flaskr.modelos.modelos import Usuario, Cancion, Album
 
-# Database
-from flaskr.modelos.database import db
-
-def seed_data():
+def seed_data(db):
     """seed_data se encarga de añadir datos de prueba con fines de testing"""
     db.session.add(Usuario(id=1, nombre="Enrique", contrasena="H0zksFgA8k6"))
     db.session.add(Usuario(id=2, nombre="Jacquette", contrasena="CMN3W3HoZe"))
@@ -37,7 +35,6 @@ def seed_data():
     db.session.add(Album(id=18, titulo='Low Down Dirty Shame, A', anio=2007, descripcion='synthesize sticky metrics', usuario=18))
     db.session.add(Album(id=19, titulo='Saw V', anio=1991, descripcion='visualize magnetic communities', usuario=5))
     db.session.add(Album(id=20, titulo='Kevin Smith: Sold Out - A Threevening with Kevin Smith', anio=1993, descripcion='exploit B2C channels', usuario=7))
-
     db.session.add(Cancion(titulo="titulo", minutos=4, segundos=40, interprete="interprete", usuario=1))
-
     db.session.commit()
+

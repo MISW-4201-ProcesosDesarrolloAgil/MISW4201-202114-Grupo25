@@ -1,4 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { ModalConfig } from 'src/app/components/modal/modal.config';
@@ -7,11 +14,10 @@ import { Cancion } from '../cancion';
 @Component({
   selector: 'app-cancion-detail',
   templateUrl: './cancion-detail.component.html',
-  styleUrls: ['./cancion-detail.component.css']
+  styleUrls: ['./cancion-detail.component.scss'],
 })
 export class CancionDetailComponent implements OnInit {
-
-  @ViewChild('modal') private modal: ModalComponent;
+   @ViewChild('modal') private modal: ModalComponent;
 
   @Input() cancion: Cancion;
   @Output() deleteCancion = new EventEmitter();
@@ -39,21 +45,37 @@ export class CancionDetailComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.userId = parseInt(this.router.snapshot.params.userId)
-    this.token = this.router.snapshot.params.userToken
+    this.userId = parseInt(this.router.snapshot.params.userId);
+    this.token = this.router.snapshot.params.userToken;
+  };
+
+  eliminarCancion() {
+    this.deleteCancion.emit(this.cancion.id);
   }
 
-  eliminarCancion(){
-    this.deleteCancion.emit(this.cancion.id)
+  goToEdit() {
+    this.routerPath.navigate([
+      `/canciones/edit/${this.cancion.id}/${this.userId}/${this.token}`,
+    ]);
   }
 
-  goToEdit(){
-    this.routerPath.navigate([`/canciones/edit/${this.cancion.id}/${this.userId}/${this.token}`])
+  getDuracion(cancion: Cancion): string {
+    // {{ cancion.minutos }}:{{ cancion.segundos }}
+    if (!cancion) {
+      return '-';
+    }
+    const { minutos = 0, segundos = 0 } = cancion;
+    return `${this.getNumeroConCero(minutos)}:${this.getNumeroConCero(
+      segundos
+    )}`;
+  }
+
+  getNumeroConCero(num: number): String {
+    return num < 10 ? `0${num}` : num.toString();
   }
 
   async compartirCancion() {
     this.modalConfig.modalTitle = `Compartir Canción ${this.cancion.titulo}`;
     return await this.modal.open();
   }
-
 }
