@@ -53,7 +53,7 @@ jobs:
         appdir: front-end/tutorial-canciones
         docker_build_args: |
           ENV_TYPE
-        env:
+      env:
           ENV_TYPE: production
 
 
