@@ -7,7 +7,7 @@ import { AlbumService } from '../album.service';
 @Component({
   selector: 'app-album-list',
   templateUrl: './album-list.component.html',
-  styleUrls: ['./album-list.component.css']
+  styleUrls: ['./album-list.component.scss']
 })
 export class AlbumListComponent implements OnInit {
 
@@ -17,7 +17,7 @@ export class AlbumListComponent implements OnInit {
     private toastr: ToastrService,
     private routerPath: Router
   ) { }
-  
+
   userId: number
   token: string
   albumes: Array<Album>
@@ -57,7 +57,7 @@ export class AlbumListComponent implements OnInit {
         this.showError("Ha ocurrido un error. " + error.message)
       }
     })
-    
+
   }
 
   onSelect(a: Album, index: number){
