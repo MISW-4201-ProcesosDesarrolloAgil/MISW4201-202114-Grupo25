@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
  - source: .
-   destination: /home/ec2-user/app
+   destination: /home/ec2-user/MISW4201-202114-Grupo25/flaskr
 hooks:
   AfterInstall:
    - location: scripts/install_app_dependencies
