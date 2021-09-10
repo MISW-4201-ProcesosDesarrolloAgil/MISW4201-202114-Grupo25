@@ -10,8 +10,8 @@ env:
   AWS_REGION_NAME:     "us-east-1"
   AWS_ACCES_KEY:       "AKIA6F37L2P7JXZ3U5WC"
   AWS_SECRET_KEY:      "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"
-  EB_WEB_APPLICATION_NAME: "ionic-angular-ebs"
-  EB_WEB_ENVIRONMENT_NAME: "Ionicangularebs-env"
+  #EB_WEB_APPLICATION_NAME: "ionic-angular-ebs"
+  #EB_WEB_ENVIRONMENT_NAME: "Ionicangularebs-env"
 
 
 on:
