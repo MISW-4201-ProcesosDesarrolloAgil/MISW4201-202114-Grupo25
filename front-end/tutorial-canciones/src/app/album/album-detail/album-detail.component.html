@@ -75,4 +75,52 @@
       </table>
     </div>
   </div>
+
+  <div class="row">
+    <div>
+      <h3 class="mt-4">
+        Comentarios
+        <button
+          type="button"
+          class="my-1 btn btn-outline-primary btn-circle text-center"
+          (click)="mostrarModalComentario()"
+        >
+          <i class="bi bi-plus-lg"></i>
+        </button>
+      </h3>
+    </div>
+  </div>
+
+  <app-modal #modal [modalConfig]="modalConfig">
+    <div>
+      <form
+        [formGroup]="this.comentarioForm"
+        (ngSubmit)="!this.getComentarioFormValido()"
+      >
+        <textarea
+          class="d-block form-control txt-comentario"
+          maxlength="1000"
+          name="txt-comentario"
+          id="txt-comentario"
+          formControlName="comentario"
+          [(ngModel)]="this.comentario"
+        ></textarea>
+        <div>
+          <hr />
+          <div class="d-flex div-comment-btn-wrapper">
+            <button class="btn btn-danger" (click)="this.cerrarModal()">
+              Cancelar
+            </button>
+            <button
+              class="btn btn-success"
+              [disabled]="!this.getComentarioFormValido()"
+              (click)="this.agregarComentario()"
+            >
+              Enviar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </app-modal>
 </div>
