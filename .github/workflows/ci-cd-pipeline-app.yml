@@ -74,7 +74,7 @@ jobs:
   deploy-backend-python:
     name: CD-AWS
     needs: [ build-backend-python ]
-    if: github.ref == 'refs/heads/feature/integracion-continua-code-deploy
+    if: github.ref == 'refs/heads/feature/integracion-continua-code-deploy'
     runs-on: ubuntu-latest
     steps:
     - name: Configure AWS Credentials
