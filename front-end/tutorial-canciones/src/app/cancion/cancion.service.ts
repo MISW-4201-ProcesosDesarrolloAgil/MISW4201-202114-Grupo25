@@ -23,8 +23,14 @@ export class CancionService {
     );
   }
 
-  getCanciones(): Observable<Cancion[]> {
-    return this.http.get<Cancion[]>(`${this.backUrl}/canciones`);
+  getCanciones(token: string): Observable<Cancion[]> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+    return this.http.get<Cancion[]>(
+      `${this.backUrl}/canciones`,
+        { headers: headers }
+    );
   }
 
   getAlbumesCancion(cancionId: number): Observable<Album[]> {

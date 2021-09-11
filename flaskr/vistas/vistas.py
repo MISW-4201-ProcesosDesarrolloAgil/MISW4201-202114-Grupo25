@@ -27,8 +27,11 @@ class VistaCanciones(Resource):
 
         return cancion_schema.dump(nueva_cancion)
 
+    @jwt_required()
     def get(self):
-        return [cancion_schema.dump(ca) for ca in Cancion.query.all()]
+        user_id = get_jwt_identity()
+        #current_user = Usuario.query.get_or_404(get_jwt_identity())
+        return [cancion_schema.dump(ca) for ca in Cancion.query.filter_by(usuario=user_id)]
 
 class VistaCancion(Resource):
 
