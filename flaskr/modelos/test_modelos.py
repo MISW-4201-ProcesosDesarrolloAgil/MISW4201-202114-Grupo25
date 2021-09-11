@@ -3,26 +3,22 @@ from .modelos import Cancion, Usuario
 from flaskr.modelos.database import db
 import unittest
 from flaskr.tests.data import seed_data
+from flaskr.app import app
 
 class TestModelos(unittest.TestCase):
 
-    def create_app(self):
-        self.app = create_app('default', 'sqlite:///test.db')
-        self.app_context = self.app.app_context()
-        self.app_context.push()
-
     def setUp(self):
-        self.create_app()
-        db.init_app(self.app)
-        db.create_all()
-        seed_data()
+        self.app = app.test_client()
+        self.db = db
+        self.db.create_all()
+        seed_data(self.db)
 
     def tearDown(self):
-        db.session.remove()
-        db.drop_all()
+        self.db.session.remove()
+        self.db.drop_all()
 
     def test_crear_cancion(self):
-        result = db.session.query(Cancion)
+        result = self.db.session.query(Cancion)
         self.assertEqual(result[0].id, 1)
         self.assertEqual(result[0].titulo, "titulo")
         self.assertEqual(result[0].minutos, 4)
@@ -32,8 +28,8 @@ class TestModelos(unittest.TestCase):
     
     def test_compartir_cancion_con_duenio(self):
         excepcion_obtenida = None
-        usuarios = result = db.session.query(Usuario)
-        canciones = db.session.query(Cancion)
+        usuarios = self.db.session.query(Usuario)
+        canciones = self.db.session.query(Cancion)
         usuarios_compartidos = []
         usuarios_compartidos.append(usuarios[0])
         try:
@@ -44,14 +40,14 @@ class TestModelos(unittest.TestCase):
         self.assertIsNotNone(excepcion_obtenida)
 
     def test_compartir_cancion_con_usuario(self):
-        usuarios = result = db.session.query(Usuario)
-        canciones = db.session.query(Cancion)
+        usuarios = self.db.session.query(Usuario)
+        canciones = self.db.session.query(Cancion)
         usuarios_compartidos = []
         usuarios_compartidos.append(usuarios[1])
         canciones[0].usuarios_compartidos = usuarios_compartidos
-        db.session.commit()
+        self.db.session.commit()
 
-        result = db.session.query(Cancion)
+        result = self.db.session.query(Cancion)
         self.assertEqual(result[0].id, 1)
         self.assertEqual(result[0].titulo, "titulo")
         self.assertEqual(result[0].minutos, 4)
@@ -61,8 +57,8 @@ class TestModelos(unittest.TestCase):
         self.assertEqual(result[0].usuarios_compartidos, usuarios_compartidos)
 
     def test_compartir_cancion_con_usuarios_y_duenio(self):
-        usuarios = result = db.session.query(Usuario)
-        canciones = db.session.query(Cancion)
+        usuarios = self.db.session.query(Usuario)
+        canciones = self.db.session.query(Cancion)
         usuarios_compartidos = []
         usuarios_compartidos.append(usuarios[1])
         usuarios_compartidos.append(usuarios[2])
@@ -75,8 +71,8 @@ class TestModelos(unittest.TestCase):
         self.assertIsNotNone(excepcion_obtenida)
     
     def test_compartir_cancion_con_usuarios(self):
-        usuarios = result = db.session.query(Usuario)
-        canciones = db.session.query(Cancion)
+        usuarios = self.db.session.query(Usuario)
+        canciones = self.db.session.query(Cancion)
         usuarios_compartidos = []
         usuarios_compartidos.append(usuarios[1])
         usuarios_compartidos.append(usuarios[2])
@@ -87,9 +83,9 @@ class TestModelos(unittest.TestCase):
         usuarios_compartidos.append(usuarios[7])
         usuarios_compartidos.append(usuarios[8])
         canciones[0].usuarios_compartidos = usuarios_compartidos
-        db.session.commit()
+        self.db.session.commit()
 
-        result = db.session.query(Cancion)
+        result = self.db.session.query(Cancion)
         self.assertEqual(result[0].id, 1)
         self.assertEqual(result[0].titulo, "titulo")
         self.assertEqual(result[0].minutos, 4)
@@ -99,14 +95,14 @@ class TestModelos(unittest.TestCase):
         self.assertEqual(result[0].usuarios_compartidos, usuarios_compartidos)
 
     def test_compartir_cancion_con_usuario_repetido(self):
-        usuarios = result = db.session.query(Usuario)
-        canciones = db.session.query(Cancion)
+        usuarios = self.db.session.query(Usuario)
+        canciones = self.db.session.query(Cancion)
         usuarios_compartidos = []
         usuarios_compartidos.append(usuarios[1])
         usuarios_compartidos.append(usuarios[1])
         try:
             canciones[0].usuarios_compartidos = usuarios_compartidos
-            db.session.commit()
+            self.db.session.commit()
         except Exception as e:
             excepcion_obtenida = e
 
