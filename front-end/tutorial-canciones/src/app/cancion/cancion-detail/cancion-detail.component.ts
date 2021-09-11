@@ -135,15 +135,18 @@ export class CancionDetailComponent implements OnInit {
       return;
     }
 
+    let listaUsuarios:Array<string> = [];
+    if (this.usuariosCompartidosPrev.trim().length > 0) {
+      listaUsuarios = [...this.usuariosCompartidosPrev.trim().split(',')];
+    }
+
+    listaUsuarios = [
+      ...listaUsuarios,
+      ...this.usuariosCompartidos.trim().split(','),
+    ];
+
     this.cancionService
-      .compartirCancion(
-        this.cancion.id,
-        [
-          ...this.usuariosCompartidosPrev.trim().split(','),
-          ...this.usuariosCompartidos.trim().split(',')
-        ],
-        this.token
-      )
+      .compartirCancion(this.cancion.id, listaUsuarios, this.token)
       .subscribe(
         (respuesta) => {
           if (respuesta) {
