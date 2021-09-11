@@ -79,7 +79,54 @@
         </tbody>
       </table>
     </div>
+    <div *ngIf="this.cancionCompartida" class="shared-users-list">
+      <div class="shared-users-list__title">
+        <i class="bi bi-share"></i>
+        <span>Esta canción está compartida con:</span>
+      </div>
+      <ul>
+        <li *ngFor="let usuario of this.usuariosCompartidosPrev.split(',')">
+          {{ usuario }}
+        </li>
+      </ul>
+    </div>
   </div>
 
-  <app-modal #modal [modalConfig]="modalConfig"> Prueba </app-modal>
+  <app-modal #modal [modalConfig]="modalConfig">
+    <div>
+      <form
+        [formGroup]="this.usuariosCompartidosForm"
+        (ngSubmit)="!this.getUsuariosCompartirValido()"
+      >
+        <p>
+          A continuación, escribe el nombre de usuario de los colecccionistas
+          con quienes quieres compartir esta canción
+        </p>
+        <textarea
+          class="d-block form-control txt-usuarios-compartido"
+          maxlength="1000"
+          name="txt-comentario"
+          id="txt-comentario"
+          formControlName="comentario"
+          [(ngModel)]="this.usuariosCompartidos"
+        ></textarea>
+        <p class="compartir-error">{{ this.compartirCancionError }}</p>
+        <div>
+          <hr />
+          <div class="d-flex div-share-btn-wrapper">
+            <button class="btn btn-danger" (click)="this.cerrarModal()">
+              Cancelar
+            </button>
+            <button
+              class="btn btn-success"
+              [disabled]="!this.getUsuariosCompartirValido()"
+              (click)="this.agregarUsuarios()"
+            >
+              Enviar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </app-modal>
 </div>
