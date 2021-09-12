@@ -33,7 +33,13 @@ class BaseCase(unittest.TestCase):
         self.db.drop_all()
 
 
-def GetAccessToken(application):
+def get_headers(application):
+    """:return: dictionary with Content-Tyoe and Authorization Headers """
+    token = get_access_token(application)
+    return {"Content-Type": "application/json", "Authorization": f"Bearer {token}"}
+
+
+def get_access_token(application):
     """
     getAccessToken
     """
@@ -43,5 +49,3 @@ def GetAccessToken(application):
     })
     response = application.post("/logIn", headers={"Content-Type": "application/json"}, data=payload)
     return response.json.get('token')
-
-

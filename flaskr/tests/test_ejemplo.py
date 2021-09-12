@@ -5,19 +5,17 @@ import json
 from flaskr.tests.base_case import BaseCase
 
 # Modelo
-from flaskr.tests.base_case import GetAccessToken
+from flaskr.tests.base_case import get_access_token
 
 
 class TestEjemploVista(BaseCase):  # Siempre se debe heredar de BaseCase para configucara
-    """
-    TestEjemploVista ejecuta tests de vista xxx
-    """
+    """ TestEjemploVista ejecuta tests de vista xxx """
 
     def test_caso_1(self):
         """
         test_caso_1 prueba el caso 1
         """
-        token = GetAccessToken(self.app)  # Aplica unicamente para endpoints protegidos con jwt
+        token = get_access_token(self.app)  # Aplica unicamente para endpoints protegidos con jwt
 
         payload = json.dumps({
             "descripcion": "bar"  # Reemplazar por payload a probar
