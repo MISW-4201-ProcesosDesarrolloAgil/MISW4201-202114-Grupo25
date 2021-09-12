@@ -35,6 +35,8 @@ def seed_data(db):
     db.session.add(Album(id=18, titulo='Low Down Dirty Shame, A', anio=2007, descripcion='synthesize sticky metrics', usuario=18))
     db.session.add(Album(id=19, titulo='Saw V', anio=1991, descripcion='visualize magnetic communities', usuario=5))
     db.session.add(Album(id=20, titulo='Kevin Smith: Sold Out - A Threevening with Kevin Smith', anio=1993, descripcion='exploit B2C channels', usuario=7))
-    db.session.add(Cancion(titulo="titulo", minutos=4, segundos=40, interprete="interprete", usuario=1))
+
+    db.session.add(Cancion(titulo="Nothing Else Matters", minutos=4, segundos=40, interprete="Metallica", usuario=1))
+    db.session.add(Cancion(titulo="Black in Black", minutos=4, segundos=40, interprete="AC/DC", usuario=2))
     db.session.commit()
 

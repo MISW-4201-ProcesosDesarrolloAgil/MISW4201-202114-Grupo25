@@ -9,9 +9,7 @@ from flaskr.tests.base_case import get_access_token
 
 
 class TestEjemploVista(BaseCase):  # Siempre se debe heredar de BaseCase para configucara
-    """
-    TestEjemploVista ejecuta tests de vista xxx
-    """
+    """ TestEjemploVista ejecuta tests de vista xxx """
 
     def test_caso_1(self):
         """
