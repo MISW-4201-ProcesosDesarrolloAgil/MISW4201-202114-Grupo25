@@ -30,6 +30,9 @@ class VistaComentarios(Resource):
         if descripcion is None or descripcion =="":
             return {"message": "la descripcion no puede estar en blanco"}, 400
 
+        if len(descripcion) > 1000:
+            return {"message": "el comentario no puede tener mas de 1000 caracteres"}, 400
+
         album = Album.query.filter_by(id=album_id, usuario=user_id).first()
         if album is None:
             return {"message": "el album indicado no existe"}, 400

@@ -2,11 +2,10 @@
 import json
 
 # unitest
-from flaskr.tests.base_case import BaseCase
+from flaskr.tests.base_case import BaseCase, get_headers
 
 # Modelo
 from flaskr.modelos.comentarios import ComentarioModel
-from flaskr.tests.base_case import GetAccessToken
 
 # Database
 from flaskr.modelos.database import db
@@ -21,26 +20,70 @@ class TestVistaComentarios(BaseCase):
         """
         test creacion satisfactoria prueba la creacion de un comentario satisfactoriamente
         """
-        token = GetAccessToken(self.app)
+        # Config
+        headers = get_headers(self.app)
 
+        # Case 1
         payload = json.dumps({
             "descripcion": "Test Prueba"
         })
+        response = self.app.post("/album/1/comentario", headers=headers, data=payload)
+        self.assertEqual(201, response.status_code)
+        self.assertEqual("comentario creado satisfactoriamente", response.json.get('message'))
 
-        headers = {
-                    "Content-Type": "application/json",
-                    "Authorization": f"Bearer {token}"
-        }
+        # Case 2 - Special Characters
+        payload = json.dumps({
+            "descripcion": "@#$½&__.?'+ççç\\/"
+        })
+        response = self.app.post("/album/1/comentario", headers=headers, data=payload)
+        self.assertEqual(201, response.status_code)
+        self.assertEqual("comentario creado satisfactoriamente", response.json.get('message'))
 
+    def test_comentario_vacio(self):
+        """ Test para verificar la validacion de un comentario vacio """
+        headers = get_headers(self.app)
+
+        # Case 1
+        payload = json.dumps({
+            "descripcion": "    "
+        })
+        response = self.app.post("/album/1/comentario", headers=headers, data=payload)
+        self.assertEqual(400, response.status_code, "invalid response code")
+        self.assertEqual("la descripcion no puede estar en blanco", response.json.get('message'))
+
+        # Case 2
+        payload = json.dumps({
+            "descripcion": ""
+        })
         response = self.app.post("/album/1/comentario", headers=headers, data=payload)
 
-        self.assertEqual(201, response.status_code)
+        self.assertEqual(400, response.status_code, "invalid response code")
+        self.assertEqual("la descripcion no puede estar en blanco", response.json.get('message'))
+
+    def test_comentario_caracteres_excedidos(self):
+        """ Test para verificar la validacion del limite maximo de caracteres"""
+        headers = get_headers(self.app)
+
+        # Case 1
+        payload = json.dumps({
+            "descripcion": "*"*1001,
+        })
+        response = self.app.post("/album/1/comentario", headers=headers, data=payload)
+        self.assertEqual(400, response.status_code, "invalid response code")
+        self.assertEqual("el comentario no puede tener mas de 1000 caracteres", response.json.get('message'))
+
+        # Case 2
+        payload = json.dumps({
+            "descripcion": "*"*1000,
+        })
+        response = self.app.post("/album/1/comentario", headers=headers, data=payload)
+
+        self.assertEqual(201, response.status_code, "respuesta ok")
+        self.assertEqual("comentario creado satisfactoriamente", response.json.get('message'))
 
 
 class TestModeloComentario(BaseCase):
-    """
-    Tests para el modelo de comentarios
-    """
+    """ Tests para el modelo de comentarios """
 
     def test_comentario_correcto(self):
         """
