@@ -9,7 +9,7 @@ from flaskr.modelos.database import db
 # Vistas
 from flaskr.vistas.comentario import VistaComentarios
 from flaskr.vistas import VistaCanciones, VistaCancion, VistaSignIn, VistaAlbum, VistaAlbumsUsuario, \
-    VistaCancionesAlbum, VistaLogIn, VistaAlbumesCanciones
+    VistaCancionesAlbum, VistaLogIn, VistaAlbumesCanciones, VistaCancionesUsuariosCompartidos
 
 # Utils
 from . import create_app
@@ -37,4 +37,5 @@ api.add_resource(VistaLogIn, '/logIn')
 api.add_resource(VistaAlbumsUsuario, '/usuario/<int:id_usuario>/albumes')
 api.add_resource(VistaAlbum, '/album/<int:id_album>')
 api.add_resource(VistaCancionesAlbum, '/album/<int:id_album>/canciones')
+api.add_resource(VistaCancionesUsuariosCompartidos, '/cancion/<int:id_cancion>/usuarios-compartidos')
 api.add_resource(VistaComentarios, '/album/<int:album_id>/comentario')

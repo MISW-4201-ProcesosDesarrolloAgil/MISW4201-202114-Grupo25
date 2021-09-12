@@ -3,13 +3,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Album} from './album';
 import { Cancion } from '../cancion/cancion';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AlbumService {
 
-  private backUrl: string = "http://localhost:5000"
+  private backUrl: string = environment.baseUrl;
 
   constructor(private http: HttpClient) { }
 
