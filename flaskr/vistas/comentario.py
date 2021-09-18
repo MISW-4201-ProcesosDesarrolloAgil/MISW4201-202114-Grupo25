@@ -54,3 +54,14 @@ class VistaComentarios(Resource):
                    "message": "comentario creado satisfactoriamente",
                    "data": comentario_schema.dump(comentario),
                }, 201
+
+
+    def get(self, album_id):
+        """
+         Metodo get de la vista de comentarios.
+        Devuelve los comentarios de un album dado
+
+        :return: Comentarios del album, Estatus Http 200
+        """
+        comentarios = ComentarioModel.get_by_album(album_id)
+        return [comentario_schema.dump(c) for c in comentarios], 200

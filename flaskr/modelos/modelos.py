@@ -1,7 +1,6 @@
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, SQLAlchemySchema, auto_field
 from marshmallow import fields
 import enum
-from flaskr.modelos.comentarios import ComentarioModel
 from sqlalchemy.orm import validates
 
 # Database
@@ -45,7 +44,6 @@ class Album(db.Model):
     medio = db.Column(db.Enum(Medio))
     usuario = db.Column(db.Integer, db.ForeignKey("usuario.id"))
     canciones = db.relationship('Cancion', secondary = 'album_cancion', back_populates="albumes")
-    comentarios = db.relationship('ComentarioModel')
 
 class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -54,7 +52,6 @@ class Usuario(db.Model):
     albumes = db.relationship('Album', cascade='all, delete, delete-orphan')
     canciones = db.relationship('Cancion', cascade='all, delete, delete-orphan')
     canciones_compartidas = db.relationship('Cancion', secondary = 'usuario_cancion_compartida', back_populates="usuarios_compartidos")
-    comentarios = db.relationship('ComentarioModel')
 
 
 class EnumADiccionario(fields.Field):
@@ -81,3 +78,12 @@ class UsuarioSchema(SQLAlchemyAutoSchema):
          model = Usuario
          include_relationships = True
          load_instance = True
+
+class UsuarioBaseSchema(SQLAlchemySchema):
+    """
+    Schema con la informacion base de un usuario
+    """
+    class Meta:
+        model = Usuario
+    id = auto_field()
+    nombre = auto_field()
