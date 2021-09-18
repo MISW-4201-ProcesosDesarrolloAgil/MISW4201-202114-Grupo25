@@ -6,11 +6,11 @@ from datetime import datetime
 from flaskr.tests.base_case import BaseCase, get_headers
 
 # Modelo
-from flaskr.modelos.comentarios import ComentarioModel
-
+from flaskr.modelos.comentarios import ComentarioModel, ComentarioSchema
 # Database
 from flaskr.modelos.database import db
 
+comentario_schema = ComentarioSchema()
 
 class TestVistaComentarios(BaseCase):
     """
@@ -149,4 +149,29 @@ class TestModeloComentario(BaseCase):
             self.assertIsInstance(e, ValueError)
 
     def test_consultar_comentarios_de_album(self):
-        pass
+        "test para consultar un comentario por album"
+        result = ComentarioModel.get_by_album(1)
+
+        # Descripcion de comentarios
+        self.assertEqual(result[0].descripcion, "Comentario de prueba numero 4")
+        self.assertEqual(result[1].descripcion, "Comentario de prueba numero 3")
+        self.assertEqual(result[2].descripcion, "Comentario de prueba numero 2")
+        self.assertEqual(result[3].descripcion, "Comentario de prueba numero 1")
+
+        # Id de comentario
+        self.assertEqual(result[0].id, 4)
+        self.assertEqual(result[1].id, 3)
+        self.assertEqual(result[2].id, 2)
+        self.assertEqual(result[3].id, 1)
+
+        # Usuario relacionado con el comentario
+        self.assertEqual(result[0].user.nombre, "Jacquette")
+        self.assertEqual(result[1].user.nombre, "Jacquette")
+        self.assertEqual(result[2].user.nombre, "Enrique")
+        self.assertEqual(result[3].user.nombre, "Enrique")
+
+        # Fechas de creacion
+        self.assertGreater(result[0].fecha_creacion, result[1].fecha_creacion)
+        self.assertGreater(result[1].fecha_creacion, result[2].fecha_creacion)
+        self.assertGreater(result[2].fecha_creacion, result[3].fecha_creacion)
+
