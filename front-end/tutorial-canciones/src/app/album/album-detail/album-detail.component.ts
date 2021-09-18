@@ -33,7 +33,7 @@ export class AlbumDetailComponent implements OnInit {
   userId: number;
   token: string;
 
-  comentarios: Array<Comentario>;
+  comentarios: Array<Comentario> = [];
 
   public modalConfig: ModalConfig = {
     modalTitle: 'Agregar Comentario a Álbum'
@@ -65,7 +65,9 @@ export class AlbumDetailComponent implements OnInit {
     if (!this.album?.id) {
       return;
     }
-    this.comentarios = this.albumService.getAlbumComments(this.album.id, this.token);
+    this.albumService.getAlbumComments(this.album.id, this.token).subscribe(comentarios => {
+      this.comentarios = comentarios;
+    });
   }
 
   goToEdit() {

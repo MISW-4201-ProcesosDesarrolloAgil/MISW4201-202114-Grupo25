@@ -89,14 +89,14 @@
         </button>
       </h3>
     </div>
-    <div class="ionic-list">
-      <div *ngFor="let comentario of this.comentarios">
+    <div class="ionic-list" *ngIf="this.comentarios.length > 0">
+      <div *ngFor="let coment of this.comentarios">
         <div class="ionic-list__comment">
           <div class="ionic-list__header">
-            <span>{{ comentario.usuario }}</span>
-            <span class="ionic-list__header__date">{{ comentario.fecha }}</span>
+            <span>{{ coment?.user.nombre || '' }}</span>
+            <span class="ionic-list__header__date">{{ coment.fecha_creacion | date:'dd/MM/YYYY' }}</span>
           </div>
-          <p>{{ comentario.descripcion }}</p>
+          <p>{{ coment.descripcion }}</p>
         </div>
       </div>
     </div>
