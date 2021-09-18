@@ -1,5 +1,6 @@
 # Utils
 import json
+from datetime import datetime
 
 # unitest
 from flaskr.tests.base_case import BaseCase, get_headers
@@ -66,7 +67,7 @@ class TestVistaComentarios(BaseCase):
 
         # Case 1
         payload = json.dumps({
-            "descripcion": "*"*1001,
+            "descripcion": "*" * 1001,
         })
         response = self.app.post("/album/1/comentario", headers=headers, data=payload)
         self.assertEqual(400, response.status_code, "invalid response code")
@@ -74,33 +75,69 @@ class TestVistaComentarios(BaseCase):
 
         # Case 2
         payload = json.dumps({
-            "descripcion": "*"*1000,
+            "descripcion": "*" * 1000,
         })
         response = self.app.post("/album/1/comentario", headers=headers, data=payload)
 
         self.assertEqual(201, response.status_code, "respuesta ok")
         self.assertEqual("comentario creado satisfactoriamente", response.json.get('message'))
 
+    def test_consultar_comentarios(self):
+        """ Test consultar comentarios en orden descendente"""
+        headers = get_headers(self.app)
+
+        response = self.app.get("/album/1/comentario", headers=headers)
+
+        self.assertEqual(200, response.status_code, "invalid response code")
+        # self.assertEqual(expected, response.json, "invalid response")
+
+        # Descripcion de comentarios
+        self.assertEqual(response.json[0].get('descripcion'), "Comentario de prueba numero 4")
+        self.assertEqual(response.json[1].get('descripcion'), "Comentario de prueba numero 3")
+        self.assertEqual(response.json[2].get('descripcion'), "Comentario de prueba numero 2")
+        self.assertEqual(response.json[3].get('descripcion'), "Comentario de prueba numero 1")
+
+        # Id de comentario
+        self.assertEqual(response.json[0].get('id'), 4)
+        self.assertEqual(response.json[1].get('id'), 3)
+        self.assertEqual(response.json[2].get('id'), 2)
+        self.assertEqual(response.json[3].get('id'), 1)
+
+        # Usuario relacionado con el comentario
+        self.assertEqual(response.json[0].get('user').get('nombre'), "Jacquette")
+        self.assertEqual(response.json[1].get('user').get('nombre'), "Jacquette")
+        self.assertEqual(response.json[2].get('user').get('nombre'), "Enrique")
+        self.assertEqual(response.json[3].get('user').get('nombre'), "Enrique")
+
+        # Fechas de creacion
+        fechas_comentarios = []
+        for fecha in response.json:
+            fecha_str = fecha.get('fecha_creacion').replace("T", " ")
+            fechas_comentarios.append(datetime.strptime(fecha_str, "%Y-%m-%d %H:%M:%S.%f"))
+        self.assertGreater(fechas_comentarios[0], fechas_comentarios[1])
+        self.assertGreater(fechas_comentarios[1], fechas_comentarios[2])
+        self.assertGreater(fechas_comentarios[2], fechas_comentarios[3])
+
 
 class TestModeloComentario(BaseCase):
     """ Tests para el modelo de comentarios """
 
-    def test_comentario_correcto(self):
+    def test_crear_comentario_correcto(self):
         """
         test de creacion de un comentario de manera satisfactoria
         :return:
         """
         descripcion = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae cursus nibh. Donec " \
                       "elementum at. "
-        self.db.session.add(ComentarioModel(id=1, descripcion=descripcion))
+        self.db.session.add(ComentarioModel(id=100, descripcion=descripcion))
         self.db.session.commit()
 
-        result = db.session.query(ComentarioModel)
+        result = db.session.query(ComentarioModel).filter_by(id=100)
 
-        self.assertEqual(result[0].id, 1)
+        self.assertEqual(result[0].id, 100)
         self.assertEqual(result[0].descripcion, descripcion)
 
-    def test_comentario_vacio(self):
+    def test_crear_comentario_vacio(self):
         """
         test de creacion de un comentario vacio
         :return:
@@ -110,3 +147,6 @@ class TestModeloComentario(BaseCase):
             self.db.session.add(ComentarioModel(id=2, descripcion=descripcion))
         except Exception as e:
             self.assertIsInstance(e, ValueError)
+
+    def test_consultar_comentarios_de_album(self):
+        pass
