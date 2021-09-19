@@ -89,6 +89,17 @@
         </button>
       </h3>
     </div>
+    <div class="ionic-list" *ngIf="this.comentarios.length > 0">
+      <div *ngFor="let coment of this.comentarios">
+        <div class="ionic-list__comment">
+          <div class="ionic-list__header">
+            <span>{{ coment?.user.nombre || '' }}</span>
+            <span class="ionic-list__header__date">{{ coment.fecha_creacion | date:'dd/MM/YYYY' }}</span>
+          </div>
+          <p>{{ coment.descripcion }}</p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <app-modal #modal [modalConfig]="modalConfig">

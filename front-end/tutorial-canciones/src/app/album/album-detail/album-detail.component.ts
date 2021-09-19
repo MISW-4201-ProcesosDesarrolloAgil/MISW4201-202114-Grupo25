@@ -5,11 +5,12 @@ import {
   Output,
   EventEmitter,
   ViewChild,
+  SimpleChanges,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AlbumService } from '../album.service';
-import { Album, Cancion } from '../album';
+import { Album, Cancion, Comentario } from '../album';
 
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { ModalConfig } from 'src/app/components/modal/modal.config';
@@ -32,6 +33,8 @@ export class AlbumDetailComponent implements OnInit {
   userId: number;
   token: string;
 
+  comentarios: Array<Comentario> = [];
+
   public modalConfig: ModalConfig = {
     modalTitle: 'Agregar Comentario a Álbum'
   };
@@ -49,6 +52,21 @@ export class AlbumDetailComponent implements OnInit {
     this.token = this.router.snapshot.params.userToken;
     this.comentarioForm = this.formBuilder.group({
       comentario: ['', [Validators.required, Validators.maxLength(1000)]],
+    });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.album.currentValue?.id) {
+      this.consultarComentariosAlbum();
+    }
+  }
+
+  consultarComentariosAlbum() {
+    if (!this.album?.id) {
+      return;
+    }
+    this.albumService.getAlbumComments(this.album.id, this.token).subscribe(comentarios => {
+      this.comentarios = comentarios;
     });
   }
 
@@ -94,6 +112,7 @@ export class AlbumDetailComponent implements OnInit {
         if (respuesta && respuesta.data) {
           this.modal.close();
           this.comentario = '';
+          this.consultarComentariosAlbum();
           this.toastr.success(
             'El comentario fue agregado satisfactoriamente',
             'Comentario agregado'

@@ -7,7 +7,33 @@
   }
 
   tr.selected {
-    background-color: #FFC163;
+    background-color: #ffc163;
     font-weight: bold;
+  }
+}
+
+.ionic-list {
+  margin-top: 15px;
+
+  & > div:nth-child(2n) {
+    background-color: #f4f4f4;
+  }
+  & > div:nth-child(2n + 1) {
+    background-color: #d3d3d3;
+  }
+
+  &__comment {
+    padding: 7px 10px;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-weight: bold;
+
+    &__date {
+      font-weight: lighter;
+    }
   }
 }

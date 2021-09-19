@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Album} from './album';
+import { Album, Comentario} from './album';
 import { Cancion } from '../cancion/cancion';
 import { environment } from 'src/environments/environment';
 
@@ -62,6 +62,13 @@ export class AlbumService {
       'Authorization': `Bearer ${token}`
     })
     return this.http.post<string>(`${this.backUrl}/album/${albumId}/comentario`, { descripcion: comentario }, {headers: headers});
+  }
+
+  getAlbumComments(albumId: number, token: string): Observable<Comentario[]> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.get<Comentario[]>(`${this.backUrl}/album/${albumId}/comentario`, {headers: headers});
   }
 
 }
