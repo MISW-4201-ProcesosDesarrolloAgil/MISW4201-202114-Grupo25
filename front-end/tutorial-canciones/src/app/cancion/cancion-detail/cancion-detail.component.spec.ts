@@ -1,9 +1,10 @@
 /* tslint:disable:no-unused-variable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 
 import { CancionDetailComponent } from './cancion-detail.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('CancionDetailComponent', () => {
   let component: CancionDetailComponent;
@@ -11,9 +12,10 @@ describe('CancionDetailComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CancionDetailComponent ]
-    })
-    .compileComponents();
+      imports: [RouterTestingModule],
+      declarations: [CancionDetailComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

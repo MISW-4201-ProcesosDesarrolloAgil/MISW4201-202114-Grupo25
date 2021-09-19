@@ -1,8 +1,11 @@
 from flask import request
-from ..modelos import db, Cancion, CancionSchema, Usuario, UsuarioSchema, Album, AlbumSchema
+from flaskr.modelos.modelos import db, Cancion, CancionSchema, Usuario, UsuarioSchema, Album, AlbumSchema
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
+from collections import OrderedDict
+import sys
+import logging
 
 cancion_schema = CancionSchema()
 usuario_schema = UsuarioSchema()
@@ -13,12 +16,22 @@ class VistaCanciones(Resource):
 
     def post(self):
         nueva_cancion = Cancion(titulo=request.json["titulo"], minutos=request.json["minutos"], segundos=request.json["segundos"], interprete=request.json["interprete"])
-        db.session.add(nueva_cancion)
-        db.session.commit()
+        usuario = Usuario.query.get_or_404(request.json["id_usuario"])
+        usuario.canciones.append(nueva_cancion)
+
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            return 'La canción ya se compartió con el usuario ',409
+
         return cancion_schema.dump(nueva_cancion)
 
+    @jwt_required()
     def get(self):
-        return [cancion_schema.dump(ca) for ca in Cancion.query.all()]
+        user_id = get_jwt_identity()
+        #current_user = Usuario.query.get_or_404(get_jwt_identity())
+        return [cancion_schema.dump(ca) for ca in Cancion.query.filter_by(usuario=user_id)]
 
 class VistaCancion(Resource):
 
@@ -48,6 +61,9 @@ class VistaAlbumesCanciones(Resource):
 class VistaSignIn(Resource):
     
     def post(self):
+        usuario = Usuario.query.filter_by(nombre =request.json["nombre"]).first()
+        if usuario is not None:
+            return 'El usuario ' + str(usuario.nombre) + ' ya existe en el sistema.',409
         nuevo_usuario = Usuario(nombre=request.json["nombre"], contrasena=request.json["contrasena"])
         db.session.add(nuevo_usuario)
         db.session.commit()
@@ -142,3 +158,84 @@ class VistaAlbum(Resource):
         db.session.commit()
         return '',204
 
+class VistaCancionesUsuariosCompartidos(Resource):
+
+    @jwt_required()
+    def post(self, id_cancion):
+        """
+            Método post de la vista de usuarios compartidos a una canción.
+            Comparte una canción a un listado de usuarios
+            :return: string, status code 200
+        """
+        if id_cancion > sys.maxsize:
+            return 'El campo id_cancion solo permite int como valor.',400
+
+        cancion = Cancion.query.get(id_cancion)
+        if cancion is None:
+            return "La canción no existe", 404
+        [usuario_schema.dump(al) for al in cancion.usuarios_compartidos]
+        current_user = Usuario.query.get_or_404(get_jwt_identity())
+
+        if cancion.usuario != current_user.id:
+            return 'Solo el dueño de la canción puede compartirla.',400
+
+        if isinstance(request.json["usuarios_compartidos"], list) == False:
+            return 'El campo usuarios_compartidos solo permite array como valor.',400
+
+        nuevos_usuarios_compartidos = list(OrderedDict.fromkeys(request.json["usuarios_compartidos"]))
+
+        if len(nuevos_usuarios_compartidos) == 0:
+            return 'No hay usuarios para compartir la canción.',400
+
+        if len(nuevos_usuarios_compartidos) == len(cancion.usuarios_compartidos):
+            return 'No hay usuarios nuevos para compartir la canción o los que están no pueden ser removidos.',400
+        
+        if len(nuevos_usuarios_compartidos) < len(cancion.usuarios_compartidos):
+            return 'Los usuarios compartidos no pueden ser removidos.',409 
+
+        for i in range(len(cancion.usuarios_compartidos)): 
+            if cancion.usuarios_compartidos[i].nombre != nuevos_usuarios_compartidos[i]:
+                return 'Los usuarios compartidos no pueden ser removidos.',409 
+        
+        for i in range(len(cancion.usuarios_compartidos), len(nuevos_usuarios_compartidos)):
+            newUser = Usuario.query.filter_by(nombre = nuevos_usuarios_compartidos[i]).first()
+            if newUser is None:
+                return "El usuario: " + nuevos_usuarios_compartidos[i] + ", no existe.", 404
+            
+            try:
+                cancion.usuarios_compartidos.append(newUser)
+            except ValueError:
+                return 'La canción no puede ser compartida con el dueño de la misma.',409
+        try:
+            db.session.commit()
+        except Exception as e:
+            logging.info(e)
+            return {"error ": "internal error"}, 500
+
+        return 'Canción compartida.'
+
+    @jwt_required()
+    def get(self, id_cancion):
+        """
+            Método get de la vista de usuarios compartidos a una canción.
+            muestra el listado de usuarios que tienen compartida una canción
+            :return: array[], status code 200
+        """
+        if id_cancion > sys.maxsize:
+            return 'El campo id_cancion solo permite int como valor.',400
+
+        cancion = Cancion.query.get(id_cancion)
+        if cancion is None:
+            return "La canción no existe.", 404
+    
+        [usuario_schema.dump(al) for al in cancion.usuarios_compartidos]
+
+        current_user = Usuario.query.get_or_404(get_jwt_identity())
+        if cancion.usuario != current_user.id:
+            return 'Solo el dueño de la canción puede ver con quién la compartió.',400
+
+        usuarios_compartidos = []
+        for i in range(len(cancion.usuarios_compartidos)):
+            usuarios_compartidos.append(cancion.usuarios_compartidos[i].nombre)
+
+        return {"usuarios_compartidos": usuarios_compartidos}

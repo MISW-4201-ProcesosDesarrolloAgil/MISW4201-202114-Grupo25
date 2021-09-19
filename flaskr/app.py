@@ -1,19 +1,34 @@
-from flaskr import create_app
+# Flask
 from flask_restful import Api
-from .modelos import db
-from .vistas import VistaCanciones, VistaCancion, VistaSignIn, VistaAlbum, VistaAlbumsUsuario, VistaCancionesAlbum, VistaLogIn, VistaAlbumesCanciones
 from flask_jwt_extended import JWTManager
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 
-app = create_app('default')
+# Modelos
+from flaskr.modelos.database import db
+
+# Vistas
+from flaskr.vistas.comentario import VistaComentarios
+from flaskr.vistas import VistaCanciones, VistaCancion, VistaSignIn, VistaAlbum, VistaAlbumsUsuario, \
+    VistaCancionesAlbum, VistaLogIn, VistaAlbumesCanciones, VistaCancionesUsuariosCompartidos
+
+# Utils
+from . import create_app
+
+app = create_app()
+
 app_context = app.app_context()
 app_context.push()
 
+# Declare API
+api = Api(app)
+cors = CORS(app)
+jwt = JWTManager(app)
+
+# Initialize Database
 db.init_app(app)
 db.create_all()
-cors = CORS(app)
 
-api = Api(app)
+# Initialize Routes
 api.add_resource(VistaCanciones, '/canciones')
 api.add_resource(VistaCancion, '/cancion/<int:id_cancion>')
 api.add_resource(VistaAlbumesCanciones, '/cancion/<int:id_cancion>/albumes')
@@ -22,5 +37,5 @@ api.add_resource(VistaLogIn, '/logIn')
 api.add_resource(VistaAlbumsUsuario, '/usuario/<int:id_usuario>/albumes')
 api.add_resource(VistaAlbum, '/album/<int:id_album>')
 api.add_resource(VistaCancionesAlbum, '/album/<int:id_album>/canciones')
-
-jwt = JWTManager(app)
+api.add_resource(VistaCancionesUsuariosCompartidos, '/cancion/<int:id_cancion>/usuarios-compartidos')
+api.add_resource(VistaComentarios, '/album/<int:album_id>/comentario')

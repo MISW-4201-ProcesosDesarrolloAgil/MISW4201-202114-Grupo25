@@ -1,0 +1,39 @@
+@import "../../../common-styles/colors";
+@import "../../../common-styles/fonts";
+
+.app-header {
+  background-color: $dark-gray;
+  color: white;
+
+  & &__logo {
+    color: $yellow-logo;
+  }
+
+  &__logo {
+    font-family: $ionic-font;
+    font-size: 2rem;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 44px;
+  }
+
+  a {
+    color: white;
+  }
+
+  & &__mobile-menu {
+    border: unset;
+    color: $yellow-logo;
+    font-size: 2.5rem;
+  }
+
+  & &__mobile-menu:focus {
+    box-shadow: unset;
+    color: $red-contrast;
+  }
+
+  .nav-item a:hover {
+    color: $yellow-logo;
+    cursor: pointer;
+  }
+}

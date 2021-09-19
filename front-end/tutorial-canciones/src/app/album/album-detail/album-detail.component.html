@@ -1,32 +1,52 @@
-<div class="container">
-
+<div class="container album-details">
   <div class="row">
-    <div class="col-12 text-center mb-2" >
-      <label class="fs-4 fw-bold">Álbum: {{album?.titulo}} ({{album?.anio}})</label>
-      <button *ngIf="album" type="button" class="btn btn-outline-success ms-3 me-2" (click)="goToEdit()" title="Editar álbum"><i class="bi bi-pencil-square"></i></button>
-      <button *ngIf="album" type="button" class="btn btn-outline-info me-1 me-2" (click)="goToJoinCancion()" title="Agregar canción" ><i class="bi bi-plus" ></i><i class="bi bi-music-note"></i></button>
-      <button *ngIf="album" type="button" class="btn btn-outline-danger me-1" (click)="eliminarAlbum()" title="Eliminar álbum"><i class="bi bi-trash-fill"></i></button>
+    <div class="col-12 text-center mb-2">
+      <label class="fs-4 fw-bold album-details__title"
+        >Álbum: {{ album?.titulo }} ({{ album?.anio }})</label
+      >
+      <button
+        *ngIf="album"
+        type="button"
+        class="btn btn-outline-success ms-3 me-2"
+        (click)="goToEdit()"
+        title="Editar álbum"
+      >
+        <i class="bi bi-pencil-square"></i>
+      </button>
+      <button
+        *ngIf="album"
+        type="button"
+        class="btn btn-outline-info me-1 me-2"
+        (click)="goToJoinCancion()"
+        title="Agregar canción"
+      >
+        <i class="bi bi-plus"></i><i class="bi bi-music-note"></i>
+      </button>
+      <button
+        *ngIf="album"
+        type="button"
+        class="btn btn-outline-danger me-1"
+        (click)="eliminarAlbum()"
+        title="Eliminar álbum"
+      >
+        <i class="bi bi-trash-fill"></i>
+      </button>
     </div>
   </div>
 
-  <div class="row mt-2">
-    <div class="col-6">
-      <div class="card">
-        <div class="card-body">
-          <p><span class="fw-bold">Medio: </span> <span class="text-capitalize">{{album?.medio?.llave}}</span></p>
-          <p>{{album?.descripcion}}</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-6">
-      <div class="card">
-        <div class="card-body">
-          <p class="fw-bold">Intérpretes:</p>
-          <ul class="mt-0">
-            <li class="my-1" *ngFor="let interprete of album?.interpretes">{{interprete}}</li>
-          </ul>
-        </div>
-      </div>
+  <div>
+    <p>
+      <span class="fw-bold">Medio: </span>
+      <span class="text-capitalize">{{ album?.medio?.llave }}</span>
+    </p>
+    <p><b>Descripción: </b>{{ album?.descripcion }}</p>
+    <div>
+      <p class="fw-bold">Intérpretes:</p>
+      <ul class="mt-0">
+        <li class="my-1" *ngFor="let interprete of album?.interpretes">
+          {{ interprete }}
+        </li>
+      </ul>
     </div>
   </div>
 
@@ -35,7 +55,7 @@
       <h5>Canciones</h5>
     </div>
     <div class="col-12">
-      <table class="table table-hover table-bordered" >
+      <table class="table table-hover table-bordered ionic-table">
         <thead class="table-light">
           <tr>
             <th scope="col" class="text-center">Canción</th>
@@ -44,13 +64,74 @@
           </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let cancion of album?.canciones" >
-              <td >{{cancion.titulo}}</td>
-              <td class="text-center">{{cancion.minutos}}:{{cancion.segundos}}</td>
-              <td >{{cancion.interprete}}</td>
-            </tr>
+          <tr *ngFor="let cancion of album?.canciones">
+            <td>{{ cancion.titulo }}</td>
+            <td class="text-center">
+              {{ getDuracion(cancion) }}
+            </td>
+            <td>{{ cancion.interprete }}</td>
+          </tr>
         </tbody>
       </table>
     </div>
   </div>
+
+  <div class="row">
+    <div>
+      <h3 class="mt-4">
+        Comentarios
+        <button
+          type="button"
+          class="my-1 btn btn-outline-primary btn-circle text-center"
+          (click)="mostrarModalComentario()"
+        >
+          <i class="bi bi-plus-lg"></i>
+        </button>
+      </h3>
+    </div>
+    <div class="ionic-list" *ngIf="this.comentarios.length > 0">
+      <div *ngFor="let coment of this.comentarios">
+        <div class="ionic-list__comment">
+          <div class="ionic-list__header">
+            <span>{{ coment?.user.nombre || '' }}</span>
+            <span class="ionic-list__header__date">{{ coment.fecha_creacion | date:'dd/MM/YYYY' }}</span>
+          </div>
+          <p>{{ coment.descripcion }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-modal #modal [modalConfig]="modalConfig">
+    <div>
+      <form
+        [formGroup]="this.comentarioForm"
+        (ngSubmit)="!this.getComentarioFormValido()"
+      >
+        <textarea
+          class="d-block form-control txt-comentario"
+          maxlength="1000"
+          name="txt-comentario"
+          id="txt-comentario"
+          formControlName="comentario"
+          [(ngModel)]="this.comentario"
+        ></textarea>
+        <div>
+          <hr />
+          <div class="d-flex div-comment-btn-wrapper">
+            <button class="btn btn-danger" (click)="this.cerrarModal()">
+              Cancelar
+            </button>
+            <button
+              class="btn btn-success"
+              [disabled]="!this.getComentarioFormValido()"
+              (click)="this.agregarComentario()"
+            >
+              Enviar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </app-modal>
 </div>

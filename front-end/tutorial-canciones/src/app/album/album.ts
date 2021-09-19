@@ -64,3 +64,23 @@ export class Cancion{
         this.interprete = interprete
     }
 }
+
+
+export class Comentario {
+  id: number;
+  user: any;
+  fecha_creacion: string;
+  descripcion: string;
+
+  constructor(
+    id: number,
+    user: any,
+    fecha_creacion: string,
+    descripcion: string
+  ) {
+    this.id = id;
+    this.user = user;
+    this.fecha_creacion = fecha_creacion;
+    this.descripcion = descripcion
+  }
+}

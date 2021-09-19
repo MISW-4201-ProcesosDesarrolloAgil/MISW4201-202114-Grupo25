@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -15,14 +15,19 @@
     "@angular/compiler": "~12.1.2",
     "@angular/core": "~12.1.2",
     "@angular/forms": "~12.1.2",
+    "@angular/localize": "~12.1.2",
     "@angular/platform-browser": "~12.1.2",
     "@angular/platform-browser-dynamic": "~12.1.2",
     "@angular/router": "~12.1.2",
     "@auth0/angular-jwt": "^5.0.2",
+    "@ng-bootstrap/ng-bootstrap": "^10.0.0",
     "bootstrap": "^5.0.2",
     "bootstrap-icons": "^1.5.0",
+    "jquery": "^3.6.0",
+    "ng-bootstrap": "^1.6.3",
     "ngx-toastr": "^14.0.0",
     "rxjs": "~6.6.0",
+    "tether": "^2.0.0",
     "tslib": "^2.2.0",
     "zone.js": "~0.11.4"
   },

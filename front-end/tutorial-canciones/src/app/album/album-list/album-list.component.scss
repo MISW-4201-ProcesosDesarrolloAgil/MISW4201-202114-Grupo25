@@ -1,0 +1,33 @@
+@import '../../../common-styles/colors.scss';
+@import '../../../common-styles/common-components.scss';
+
+.album-list {
+  margin-bottom: 2rem;
+
+  &__search-div {
+    display: flex;
+    justify-content: space-between;
+
+    h1 {
+      color: $color-title;
+    }
+  }
+
+  &__list {
+    max-height: 200px;
+  }
+}
+
+.btn-circle {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 12px;
+  line-height: 1.428571429;
+  border-radius: 15px;
+}
+
+.selected {
+  background-color: #ececec;
+}
