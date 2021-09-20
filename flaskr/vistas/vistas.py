@@ -239,3 +239,85 @@ class VistaCancionesUsuariosCompartidos(Resource):
             usuarios_compartidos.append(cancion.usuarios_compartidos[i].nombre)
 
         return {"usuarios_compartidos": usuarios_compartidos}
+
+class VistaAlbumesUsuariosCompartidos(Resource):
+    
+    @jwt_required()
+    def post(self, id_album):
+        """
+            Método post de la vista de usuarios compartidos a un álbum.
+            Comparte un álbum a un listado de usuarios
+            :return: string, status code 200
+        """
+        if id_album > sys.maxsize:
+            return 'El campo id_album solo permite int como valor.',400
+
+        album = Album.query.get(id_album)
+        if album is None:
+            return "El álbum no existe", 404
+        [usuario_schema.dump(al) for al in album.usuarios_compartidos]
+        current_user = Usuario.query.get_or_404(get_jwt_identity())
+
+        if album.usuario != current_user.id:
+            return 'Solo el dueño del álbum puede compartirlo.',400
+
+        if isinstance(request.json["usuarios_compartidos"], list) == False:
+            return 'El campo usuarios_compartidos solo permite array como valor.',400
+
+        nuevos_usuarios_compartidos = list(OrderedDict.fromkeys(request.json["usuarios_compartidos"]))
+
+        if len(nuevos_usuarios_compartidos) == 0:
+            return 'No hay usuarios para compartir el álbum.',400
+
+        if len(nuevos_usuarios_compartidos) == len(album.usuarios_compartidos):
+            return 'No hay usuarios nuevos para compartir el álbum o los que están no pueden ser removidos.',400
+        
+        if len(nuevos_usuarios_compartidos) < len(album.usuarios_compartidos):
+            return 'Los usuarios compartidos no pueden ser removidos.',409 
+
+        for i in range(len(album.usuarios_compartidos)): 
+            if album.usuarios_compartidos[i].nombre != nuevos_usuarios_compartidos[i]:
+                return 'Los usuarios compartidos no pueden ser removidos.',409 
+        
+        for i in range(len(album.usuarios_compartidos), len(nuevos_usuarios_compartidos)):
+            newUser = Usuario.query.filter_by(nombre = nuevos_usuarios_compartidos[i]).first()
+            if newUser is None:
+                return "El usuario: " + nuevos_usuarios_compartidos[i] + ", no existe.", 404
+            
+            try:
+                album.usuarios_compartidos.append(newUser)
+            except ValueError:
+                return 'El álbum no puede ser compartido con el dueño del mismo.',409
+        try:
+            db.session.commit()
+        except Exception as e:
+            logging.info(e)
+            return {"error ": "internal error"}, 500
+
+        return 'Álbum compartido.'
+
+    @jwt_required()
+    def get(self, id_album):
+        """
+            Método get de la vista de usuarios compartidos a un álbum.
+            muestra el listado de usuarios que tienen compartido un álbum
+            :return: array[], status code 200
+        """
+        if id_album > sys.maxsize:
+            return 'El campo id_album solo permite int como valor.',400
+
+        album = Album.query.get(id_album)
+        if album is None:
+            return "El álbum no existe.", 404
+    
+        [usuario_schema.dump(al) for al in album.usuarios_compartidos]
+
+        current_user = Usuario.query.get_or_404(get_jwt_identity())
+        if album.usuario != current_user.id:
+            return 'Solo el dueño del álbum puede ver con quién lo compartió.',400
+
+        usuarios_compartidos = []
+        for i in range(len(album.usuarios_compartidos)):
+            usuarios_compartidos.append(album.usuarios_compartidos[i].nombre)
+
+        return {"usuarios_compartidos": usuarios_compartidos}
