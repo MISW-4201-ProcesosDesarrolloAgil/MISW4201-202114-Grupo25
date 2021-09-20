@@ -5,7 +5,128 @@ import json
 from flaskr.modelos import Album, Usuario
 
 # unitest
-from flaskr.tests.base_case import BaseCase
+from flaskr.tests.base_case import BaseCase, get_headers
+
+class TestVistaAlbumesUsuariosCompartidos(BaseCase):
+    """ TestVistaAlbumesUsuariosCompartidos ejecuta tests de vista VistaAlbumesUsuariosCompartidos """
+
+    def test_compartir_satisfactoriamente(self):
+        headers = get_headers(self.app)
+        payload = json.dumps({
+            "usuarios_compartidos": ["Jacquette", "Cassi"]
+        })
+        endpoint = "album/1/usuarios-compartidos"
+        response = self.app.post(endpoint, headers=headers, data=payload)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual("Álbum compartido.", response.json)
+    
+    def test_valor_id_album_no_soportado(self):
+        headers = get_headers(self.app)
+        payload = json.dumps({
+            "usuarios_compartidos": ["Lauren"]
+        })
+        endpoint = "album/9223372036854775808/usuarios-compartidos"
+        response = self.app.post(endpoint, headers=headers, data=payload)
+        self.assertEqual(400, response.status_code)
+        self.assertEqual("El campo id_album solo permite int como valor.", response.json)
+
+    def test_compartir_album_no_existe(self):
+        headers = get_headers(self.app)
+        payload = json.dumps({
+            "usuarios_compartidos": ["Lauren"]
+        })
+        endpoint = "album/21/usuarios-compartidos"
+        response = self.app.post(endpoint, headers=headers, data=payload)
+        self.assertEqual(404, response.status_code)
+        self.assertEqual("El álbum no existe", response.json)
+    
+    def test_compartir_album_de_otro_usuario(self):
+        headers = get_headers(self.app)
+        payload = json.dumps({
+            "usuarios_compartidos": ["Jacquette", "Cassi"]
+        })
+        endpoint = "album/2/usuarios-compartidos"
+        response = self.app.post(endpoint, headers=headers, data=payload)
+        self.assertEqual(400, response.status_code)
+        self.assertEqual("Solo el dueño del álbum puede compartirlo.", response.json)
+
+    def test_enviar_lista_usuarios_compartidos(self):
+        headers = get_headers(self.app)
+        payload = json.dumps({
+            "usuarios_compartidos": "Jacquette, Cassi"
+        })
+        endpoint = "album/1/usuarios-compartidos"
+        response = self.app.post(endpoint, headers=headers, data=payload)
+        self.assertEqual(400, response.status_code)
+        self.assertEqual("El campo usuarios_compartidos solo permite array como valor.", response.json)
+
+    def test_enviar_arreglo_de_usuarios_vacio(self):
+        headers = get_headers(self.app)
+        payload = json.dumps({
+            "usuarios_compartidos": []
+        })
+        endpoint = "album/1/usuarios-compartidos"
+        response = self.app.post(endpoint, headers=headers, data=payload)
+        self.assertEqual(400, response.status_code)
+        self.assertEqual("No hay usuarios para compartir el álbum.", response.json)
+
+    def test_compartir_usuarios_repetidos(self):
+        headers = get_headers(self.app)
+        payload = json.dumps({"usuarios_compartidos": ["Jacquette", "Cassi"]})
+        endpoint = "album/1/usuarios-compartidos"
+        response = self.app.post(endpoint, headers=headers, data=payload)
+        payload = json.dumps({ "usuarios_compartidos":  ["Jacquette", "Cassi"]})
+        endpoint = "album/1/usuarios-compartidos"
+        response = self.app.post(endpoint, headers=headers, data=payload)
+        self.assertEqual(400, response.status_code)
+        self.assertEqual("No hay usuarios nuevos para compartir el álbum o los que están no pueden ser removidos.", response.json)
+
+    def test_remover_usuarios_compartidos(self):
+        headers = get_headers(self.app)
+        payload = json.dumps({"usuarios_compartidos": ["Jacquette", "Cassi"]})
+        endpoint = "album/1/usuarios-compartidos"
+        response = self.app.post(endpoint, headers=headers, data=payload)
+        payload = json.dumps({"usuarios_compartidos": ["Jacquette"]})
+        endpoint = "album/1/usuarios-compartidos"
+        response = self.app.post(endpoint, headers=headers, data=payload)
+        self.assertEqual(409, response.status_code)
+        self.assertEqual("Los usuarios compartidos no pueden ser removidos.", response.json)
+
+    def test_compartir_con_usuario_inexistente(self):
+        headers = get_headers(self.app)
+        payload = json.dumps({"usuarios_compartidos": ["Usuario-inexistente"]})
+        endpoint = "album/1/usuarios-compartidos"
+        response = self.app.post(endpoint, headers=headers, data=payload)
+        self.assertEqual(404, response.status_code)
+        self.assertEqual("El usuario: Usuario-inexistente, no existe.", response.json)
+
+    def test_obtener_usuarios_compartidos_valor_id_album_no_soportado(self):
+        headers = get_headers(self.app)
+        endpoint = "album/9223372036854775808/usuarios-compartidos"
+        response = self.app.get(endpoint, headers=headers)
+        self.assertEqual(400, response.status_code)
+        self.assertEqual("El campo id_album solo permite int como valor.", response.json)
+
+    def test_obtener_usuarios_compartidos_album_no_existe(self):
+        headers = get_headers(self.app)
+        endpoint = "album/21/usuarios-compartidos"
+        response = self.app.get(endpoint, headers=headers)
+        self.assertEqual(404, response.status_code)
+        self.assertEqual("El álbum no existe.", response.json)
+    
+    def test_obtener_usuarios_compartidos_de_album_de_otro_usuario(self):
+        headers = get_headers(self.app)
+        endpoint = "album/2/usuarios-compartidos"
+        response = self.app.get(endpoint, headers=headers)
+        self.assertEqual(400, response.status_code)
+        self.assertEqual("Solo el dueño del álbum puede ver con quién lo compartió.", response.json)
+    
+    def test_obtener_usuarios_compartidos(self):
+        headers = get_headers(self.app)
+        endpoint = "album/1/usuarios-compartidos"
+        response = self.app.get(endpoint, headers=headers)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual({'usuarios_compartidos': []}, response.json)
 
 class TestModelosCompartirAlbum(BaseCase):
     """
