@@ -30,7 +30,7 @@ export class AlbumDetailComponent implements OnInit {
 
   usuariosCompartidos: string = '';
   usuariosCompartidosPrev: string = '';
-  compartirCancionError: string;
+  compartirAlbumError: string;
   comentarioForm: FormGroup;
   usuariosCompartidosForm: FormGroup;
   comentario: string;
@@ -98,7 +98,7 @@ export class AlbumDetailComponent implements OnInit {
 
   async compartirAlbum() {
     this.modalConfigCompartir.modalTitle = `Compartir Álbum ${this.album.titulo}`;
-    return await this.modalCompartir.open();
+    return this.modalCompartir.open();
   }
 
   eliminarAlbum() {
@@ -116,7 +116,7 @@ export class AlbumDetailComponent implements OnInit {
 
   cerrarModalCompartir() {
     this.usuariosCompartidos = '';
-    this.compartirCancionError = '';
+    this.compartirAlbumError = '';
     this.modalCompartir.close();
   }
 
@@ -152,7 +152,6 @@ export class AlbumDetailComponent implements OnInit {
   }
 
   agregarUsuarios() {
-    console.log('enviar usuarios');
     if (!this.album?.id) {
       this.modalCompartir.close();
       this.toastr.error(
@@ -193,7 +192,7 @@ export class AlbumDetailComponent implements OnInit {
         },
         (err) => {
           this.toastr.error(err.error, 'Error al compartir');
-          this.compartirCancionError = err.error;
+          this.compartirAlbumError = err.error;
         }
       );
   }
