@@ -34,7 +34,7 @@ export class AlbumDetailComponent implements OnInit {
   comentarioForm: FormGroup;
   usuariosCompartidosForm: FormGroup;
   comentario: string;
-  albumCompartido: Boolean = false;
+  albumCompartido: boolean = false;
 
   userId: number;
   token: string;
@@ -106,7 +106,7 @@ export class AlbumDetailComponent implements OnInit {
   }
 
   async mostrarModalComentario() {
-    return await this.modal.open();
+    return this.modal.open();
   }
 
   cerrarModal() {
