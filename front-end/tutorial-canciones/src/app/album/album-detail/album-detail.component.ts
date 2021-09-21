@@ -23,17 +23,27 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class AlbumDetailComponent implements OnInit {
   @ViewChild('modal') private modal: ModalComponent;
+  @ViewChild('modalCompartir') private modalCompartir: ModalComponent;
 
   @Input() album: Album;
   @Output() deleteAlbum = new EventEmitter();
 
+  usuariosCompartidos: string = '';
+  usuariosCompartidosPrev: string = '';
+  compartirCancionError: string;
   comentarioForm: FormGroup;
+  usuariosCompartidosForm: FormGroup;
   comentario: string;
+  albumCompartido: Boolean = false;
 
   userId: number;
   token: string;
 
   comentarios: Array<Comentario> = [];
+
+  public modalConfigCompartir: ModalConfig = {
+    modalTitle: 'Compartir Álbum',
+  };
 
   public modalConfig: ModalConfig = {
     modalTitle: 'Agregar Comentario a Álbum'
@@ -53,11 +63,15 @@ export class AlbumDetailComponent implements OnInit {
     this.comentarioForm = this.formBuilder.group({
       comentario: ['', [Validators.required, Validators.maxLength(1000)]],
     });
+    this.usuariosCompartidosForm = this.formBuilder.group({
+      usuarios_compartidos: ['', [Validators.required]],
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.album.currentValue?.id) {
       this.consultarComentariosAlbum();
+      this.consultarUsuariosCompartidos();
     }
   }
 
@@ -82,6 +96,11 @@ export class AlbumDetailComponent implements OnInit {
     ]);
   }
 
+  async compartirAlbum() {
+    this.modalConfigCompartir.modalTitle = `Compartir Álbum ${this.album.titulo}`;
+    return await this.modalCompartir.open();
+  }
+
   eliminarAlbum() {
     this.deleteAlbum.emit(this.album.id);
   }
@@ -93,6 +112,12 @@ export class AlbumDetailComponent implements OnInit {
   cerrarModal() {
     this.comentario = '';
     this.modal.close();
+  }
+
+  cerrarModalCompartir() {
+    this.usuariosCompartidos = '';
+    this.compartirCancionError = '';
+    this.modalCompartir.close();
   }
 
   agregarComentario() {
@@ -126,6 +151,53 @@ export class AlbumDetailComponent implements OnInit {
       });
   }
 
+  agregarUsuarios() {
+    console.log('enviar usuarios');
+    if (!this.album?.id) {
+      this.modalCompartir.close();
+      this.toastr.error(
+        'Debe seleccionar un álbum primero.',
+        'Operación inválida'
+      );
+      return;
+    }
+
+    let listaUsuarios:Array<string> = [];
+    if (this.usuariosCompartidosPrev.trim().length > 0) {
+      listaUsuarios = [...this.usuariosCompartidosPrev.trim().split(',')];
+    }
+
+    listaUsuarios = [
+      ...listaUsuarios,
+      ...this.usuariosCompartidos.trim().split(','),
+    ];
+
+    this.albumService
+      .compartirAlbum(this.album.id, listaUsuarios, this.token)
+      .subscribe(
+        (respuesta) => {
+          if (respuesta) {
+            this.modalCompartir.close();
+            this.usuariosCompartidos = '';
+            this.toastr.success(
+              'El aĺbum se compartió con tus amigos',
+              'Canción compartida'
+            );
+            this.consultarUsuariosCompartidos();
+            return;
+          }
+          this.toastr.error(
+            'Ocurrió un error compartiendo el álbum. Intenta de nuevo, por favor.',
+            'Error al compartir'
+          );
+        },
+        (err) => {
+          this.toastr.error(err.error, 'Error al compartir');
+          this.compartirCancionError = err.error;
+        }
+      );
+  }
+
   getDuracion(cancion: Cancion): string {
     const { minutos = 0, segundos = 0 } = cancion;
     return `${this.getNumeroConCero(minutos)}:${this.getNumeroConCero(
@@ -139,5 +211,34 @@ export class AlbumDetailComponent implements OnInit {
 
   getComentarioFormValido() {
     return !this.comentarioForm.invalid && this.comentario.trim().length > 0;
+  }
+
+  getUsuariosCompartirValido() {
+    return (
+      !this.usuariosCompartidosForm.invalid &&
+      this.usuariosCompartidos &&
+      this.usuariosCompartidos.trim().length > 0
+    );
+  }
+
+  consultarUsuariosCompartidos() {
+    if (!this.album?.id) {
+      return;
+    }
+    this.albumCompartido = false;
+    this.usuariosCompartidosPrev = '';
+    this.albumService
+      .consultarUsuariosCompartidos(this.album.id, this.token)
+      .subscribe((response) => {
+        if (
+          response &&
+          Array.isArray(response.usuarios_compartidos) &&
+          response.usuarios_compartidos.length > 0
+        ) {
+          this.albumCompartido = true;
+          this.usuariosCompartidosPrev =
+            response.usuarios_compartidos.join(',');
+        }
+      });
   }
 }

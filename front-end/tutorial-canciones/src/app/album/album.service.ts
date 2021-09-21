@@ -71,4 +71,33 @@ export class AlbumService {
     return this.http.get<Comentario[]>(`${this.backUrl}/album/${albumId}/comentario`, {headers: headers});
   }
 
+  compartirAlbum(
+    albumId: number,
+    usuarios: Array<string>,
+    token: string
+  ): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+    return this.http
+      .post<string>(
+        `${this.backUrl}/album/${albumId}/usuarios-compartidos`,
+        { usuarios_compartidos: usuarios },
+        { headers: headers }
+      );
+  }
+
+  consultarUsuariosCompartidos(
+    albumId: number,
+    token: string
+  ): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+    return this.http.get<string>(
+      `${this.backUrl}/album/${albumId}/usuarios-compartidos`,
+      { headers: headers }
+    );
+  }
+
 }

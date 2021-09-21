@@ -65,7 +65,8 @@ export class CancionDetailComponent implements OnInit {
     if (!this.cancion?.id) {
       return;
     }
-
+    this.cancionCompartida = false;
+    this.usuariosCompartidosPrev = '';
     this.cancionService
       .consultarUsuariosCompartidos(this.cancion.id, this.token)
       .subscribe((response) => {
