@@ -35,16 +35,13 @@ class VistaCanciones(Resource):
         c_propias_serializadas = [cancion_schema.dump(ca) for ca in c_propias]
 
         c_compartidas = Cancion.query.filter(Cancion.usuarios_compartidos.any(id=user_id)).all()
-
-        if len(c_compartidas) == 0:
-            return 'La canción compartida no existe.',400
-
         c_compartidas_serializadas = [cancion_schema.dump(ca) for ca in c_compartidas]
+
+        if len(c_compartidas + c_propias) == 0:
+            return 'El usuario no tiene canciones compartidas ni propias.',400
 
         return (c_propias_serializadas + c_compartidas_serializadas), 200
 
-        #current_user = Usuario.query.get_or_404(get_jwt_identity())
-        #return [cancion_schema.dump(ca) for ca in Cancion.query.filter_by(usuario=user_id)]
 
 class VistaCancion(Resource):
 
