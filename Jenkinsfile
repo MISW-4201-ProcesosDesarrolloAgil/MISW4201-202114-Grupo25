@@ -4,14 +4,15 @@ pipeline {
         HOME = "${WORKSPACE}"
         GIT_CREDENTIAL_ID = '67fc884e-63ed-47cc-8a49-e91b798c7178'
         GIT_REPO = 'MISW4201-202114-Grupo25'
+        GITHUB_TOKEN_ID = '782f4107-6a99-44c4-88ac-f6bd82b81b1d'
     }
     stages {
         stage('Checkout') { 
             steps {
                 scmSkip(deleteBuild: true, skipPattern:'.*\\[ci-skip\\].*')
                 git branch: 'develop',  
-                credentialsId: env.GIT_CREDENTIAL_ID,
-                url: 'https://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@github.com/MISW-4102-ProcesosDeDesarrolloAgil/' + env.GIT_REPO
+                credentialsId: env.GITHUB_TOKEN_ID,
+                url: 'https://github.com/MISW-4102-ProcesosDeDesarrolloAgil/' + env.GIT_REPO
             }
         }
         stage('Gitinspector') {
@@ -24,13 +25,13 @@ pipeline {
                         '''
                     }
                 }
-                withCredentials([usernamePassword(credentialsId: env.GIT_CREDENTIAL_ID, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                withCredentials([usernamePassword(credentialsId: env.GITHUB_TOKEN_ID, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                     sh('git config --global user.email "ci-isis2603@uniandes.edu.co"')
                     sh('git config --global user.name "ci-isis2603"')
                     sh('git add ./reports/index.html')
                     sh('git commit -m "[ci-skip] GitInspector report added"')
-                    sh('git pull https://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@github.com/MISW-4102-ProcesosDeDesarrolloAgil/${GIT_REPO} develop')
-                    sh('git push https://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@github.com/MISW-4102-ProcesosDeDesarrolloAgil/${GIT_REPO} develop')
+                    sh('git pull https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/MISW-4102-ProcesosDeDesarrolloAgil/${GIT_REPO} develop')
+                    sh('git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/MISW-4102-ProcesosDeDesarrolloAgil/${GIT_REPO} develop')
                 }  
             }
         }
@@ -51,7 +52,8 @@ pipeline {
                 script {
                     docker.image('python:3.7.6').inside {
                         sh '''
-                            python -m pytest
+                            cd flaskr
+                            python -m unittest discover -s tests -v
                         '''
                     }
                 }
@@ -62,7 +64,8 @@ pipeline {
                 script {
                     docker.image('python:3.7.6').inside {
                         sh '''
-                            python -m coverage run -m pytest
+                            cd flaskr
+                            python -m coverage run -m unittest discover -s tests -v
                             python -m coverage html
                         ''' 
                     }
@@ -74,7 +77,7 @@ pipeline {
                 publishHTML (target : [allowMissing: false,
                     alwaysLinkToLastBuild: true,
                     keepAll: true,
-                    reportDir: 'htmlcov/',
+                    reportDir: 'flaskr/htmlcov/',
                     reportFiles: 'index.html',
                     reportName: 'Coverage Report',
                     reportTitles: 'Coverage Report']

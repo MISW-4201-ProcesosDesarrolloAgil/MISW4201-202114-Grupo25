@@ -68,7 +68,8 @@ export class CancionDetailComponent implements OnInit {
     if (!this.cancion?.id || this.cancion?.compartida) {
       return;
     }
-
+    this.cancionCompartida = false;
+    this.usuariosCompartidosPrev = '';
     this.cancionService
       .consultarUsuariosCompartidos(this.cancion.id, this.token)
       .subscribe((response) => {
@@ -121,6 +122,13 @@ export class CancionDetailComponent implements OnInit {
         'Operación inválida'
       );
       return;
+    }
+
+    if (this.usuariosCompartidos === ""){
+      this.compartirCancionError = 'Debes escribir el nombre de al menos un usuario para compartir';
+      this.toastr.error(this.compartirCancionError, 'Error al compartir');
+
+      return
     }
 
     let listaUsuarios:Array<string> = [];

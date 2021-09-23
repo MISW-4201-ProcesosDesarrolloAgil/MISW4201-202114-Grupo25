@@ -16,6 +16,15 @@
       <button
         *ngIf="album"
         type="button"
+        class="btn btn-outline-danger ms-1 me-1"
+        (click)="compartirAlbum()"
+        title="Compartir álbum"
+      >
+        <em class="bi bi-share"></em>
+      </button>
+      <button
+        *ngIf="album"
+        type="button"
         class="btn btn-outline-info me-1 me-2"
         (click)="goToJoinCancion()"
         title="Agregar canción"
@@ -74,6 +83,17 @@
         </tbody>
       </table>
     </div>
+    <div *ngIf="this.albumCompartido" class="shared-users-list">
+      <div class="shared-users-list__title">
+        <em class="bi bi-share"></em>
+        <span>Este álbum está compartido con:</span>
+      </div>
+      <ul>
+        <li *ngFor="let usuario of this.usuariosCompartidosPrev.split(',')">
+          {{ usuario }}
+        </li>
+      </ul>
+    </div>
   </div>
 
   <div class="row">
@@ -128,6 +148,44 @@
               (click)="this.agregarComentario()"
             >
               Enviar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </app-modal>
+
+  <app-modal #modalCompartir [modalConfig]="modalConfigCompartir">
+    <div>
+      <form
+        [formGroup]="this.usuariosCompartidosForm"
+        (ngSubmit)="!this.getUsuariosCompartirValido()"
+      >
+        <p>
+          A continuación, escribe el nombre de usuario de los coleccionistas
+          con quienes quieres compartir este álbum
+        </p>
+        <textarea
+          class="d-block form-control txt-comentario"
+          maxlength="1000"
+          name="txt-comentario"
+          id="txt-comentario"
+          formControlName="usuarios_compartidos"
+          [(ngModel)]="this.usuariosCompartidos"
+        ></textarea>
+        <p class="compartir-error">{{ this.compartirAlbumError }}</p>
+        <div>
+          <hr />
+          <div class="d-flex div-comment-btn-wrapper">
+            <button class="btn btn-danger" (click)="this.cerrarModalCompartir()">
+              Cancelar
+            </button>
+            <button
+              class="btn btn-success"
+              [disabled]="!this.getUsuariosCompartirValido()"
+              (click)="this.agregarUsuarios()"
+            >
+              Compartir
             </button>
           </div>
         </div>

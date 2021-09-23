@@ -38,11 +38,38 @@
   }
 }
 
-
 .shared_mark {
   display: inline-block;
   margin-right: 5px;
   background-color: $yellow-logo;
   border-radius: 6px;
   padding: 0 6px;
+}
+
+.shared-users-list {
+  margin-top: 1.5rem;
+
+  &__title {
+    display: flex;
+    flex-direction: row;
+  }
+
+  em {
+    background-color: $yellow-logo;
+    border-radius: 3px;
+    color: $dark-gray;
+    margin-right: 5px;
+    padding: 7px 14px;
+    position: relative;
+    top: -8px;
+    font-weight: bold;
+  }
+
+  span {
+    font-weight: bold;
+  }
+}
+
+.compartir-error {
+  color: #F34141;
 }
