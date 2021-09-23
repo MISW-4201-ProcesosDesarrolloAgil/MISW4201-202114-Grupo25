@@ -40,10 +40,16 @@ export class CancionListComponent implements OnInit {
   }
 
   getCanciones(): void {
-    this.cancionService.getCanciones(this.token).subscribe((canciones) => {
-      this.canciones = canciones;
-      this.mostrarCanciones = canciones;
-      this.onSelect(this.mostrarCanciones[0], 0);
+    this.cancionService.getCanciones(this.token).subscribe((canciones:any) => {
+      if (Array.isArray(canciones)) {
+        this.canciones = canciones.map(cancion => {
+          const esCancionCompartida = cancion.usuario !== this.userId;
+          cancion.compartida = esCancionCompartida;
+          return cancion;
+        });
+        this.mostrarCanciones = canciones;
+        this.onSelect(this.mostrarCanciones[0], 0);
+      }
     });
   }
 

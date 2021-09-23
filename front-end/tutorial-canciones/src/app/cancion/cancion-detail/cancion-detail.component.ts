@@ -62,7 +62,10 @@ export class CancionDetailComponent implements OnInit {
   }
 
   consultarUsuariosCompartidos() {
-    if (!this.cancion?.id) {
+    this.cancionCompartida = false;
+    this.usuariosCompartidosPrev = '';
+
+    if (!this.cancion?.id || this.cancion?.compartida) {
       return;
     }
 
@@ -125,7 +128,6 @@ export class CancionDetailComponent implements OnInit {
   }
 
   agregarUsuarios() {
-    console.log('enviar usuarios');
     if (!this.cancion?.id) {
       this.modal.close();
       this.toastr.error(

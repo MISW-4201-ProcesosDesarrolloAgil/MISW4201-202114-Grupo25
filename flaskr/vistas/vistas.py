@@ -31,7 +31,7 @@ class VistaCanciones(Resource):
     def get(self):
         user_id = get_jwt_identity()
 
-        c_propias = Cancion.query.filter_by(usuario=user_id)
+        c_propias = Cancion.query.filter_by(usuario=user_id).all()
         c_propias_serializadas = [cancion_schema.dump(ca) for ca in c_propias]
 
         c_compartidas = Cancion.query.filter(Cancion.usuarios_compartidos.any(id=user_id)).all()

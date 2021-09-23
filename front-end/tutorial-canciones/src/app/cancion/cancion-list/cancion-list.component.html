@@ -37,7 +37,10 @@
             >
               <td>{{ cancion.titulo }}</td>
               <td>
-                <span class="d-flex justify-content-end">{{ getDuracion(cancion) }}</span>
+                <div class="d-flex justify-content-end">
+                  <i *ngIf="cancion.compartida === true" class="bi bi-share shared_mark" title="Canción compartida"></i>
+                  <span>{{ getDuracion(cancion) }}</span>
+                </div>
               </td>
             </tr>
           </tbody>
