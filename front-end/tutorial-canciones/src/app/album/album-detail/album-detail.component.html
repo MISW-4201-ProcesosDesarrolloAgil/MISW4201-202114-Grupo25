@@ -67,7 +67,7 @@
           <tr *ngFor="let cancion of album?.canciones">
             <td>{{ cancion.titulo }}</td>
             <td class="text-center">
-              {{ getDuracion(cancion) }}
+              {{ cancion | durationTransform }}
             </td>
             <td>{{ cancion.interprete }}</td>
           </tr>

@@ -13,6 +13,7 @@ import { CancionModule } from './cancion/cancion.module';
 import { AppFooterComponent } from './app-footer/app-footer.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ModalModule } from './components/modal/modal.module';
+import { DurationPipeModule } from './components/duration-pipe/duration-pipe.module';
 
 @NgModule({
   declarations: [AppComponent, AppFooterComponent],
@@ -32,6 +33,7 @@ import { ModalModule } from './components/modal/modal.module';
     BrowserAnimationsModule,
     NgbModule,
     ModalModule,
+    DurationPipeModule
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -62,7 +62,10 @@ export class CancionDetailComponent implements OnInit {
   }
 
   consultarUsuariosCompartidos() {
-    if (!this.cancion?.id) {
+    this.cancionCompartida = false;
+    this.usuariosCompartidosPrev = '';
+
+    if (!this.cancion?.id || this.cancion?.compartida) {
       return;
     }
 
@@ -91,20 +94,6 @@ export class CancionDetailComponent implements OnInit {
     ]);
   }
 
-  getDuracion(cancion: Cancion): string {
-    if (!cancion) {
-      return '-';
-    }
-    const { minutos = 0, segundos = 0 } = cancion;
-    return `${this.getNumeroConCero(minutos)}:${this.getNumeroConCero(
-      segundos
-    )}`;
-  }
-
-  getNumeroConCero(num: number): String {
-    return num < 10 ? `0${num}` : num.toString();
-  }
-
   async compartirCancion() {
     this.modalConfig.modalTitle = `Compartir Canción ${this.cancion.titulo}`;
     return await this.modal.open();
@@ -125,7 +114,6 @@ export class CancionDetailComponent implements OnInit {
   }
 
   agregarUsuarios() {
-    console.log('enviar usuarios');
     if (!this.cancion?.id) {
       this.modal.close();
       this.toastr.error(
