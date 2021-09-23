@@ -169,36 +169,18 @@ class VistaCancionesUsuariosCompartidos(Resource):
             :return: string, status code 200
         """
 
-        if id_cancion > sys.maxsize:
-            return 'El campo id_cancion solo permite int como valor.',400
+        result = self.validaciones_de_datos_de_cancion(id_cancion)
+        if result != None:
+            return result
 
         cancion = Cancion.query.get(id_cancion)
-        if cancion is None:
-            return "La canción no existe", 404
         [usuario_schema.dump(al) for al in cancion.usuarios_compartidos]
-        current_user = Usuario.query.get_or_404(get_jwt_identity())
-
-        if cancion.usuario != current_user.id:
-            return 'Solo el dueño de la canción puede compartirla.',400
-
-        if isinstance(request.json["usuarios_compartidos"], list) == False:
-            return 'El campo usuarios_compartidos solo permite array como valor.',400
 
         nuevos_usuarios_compartidos = list(OrderedDict.fromkeys(request.json["usuarios_compartidos"]))
+        result = validaciones_de_usuarios_compartidos('la canción', nuevos_usuarios_compartidos, cancion.usuarios_compartidos)
+        if result != None:
+            return result
 
-        if len(nuevos_usuarios_compartidos) == 0:
-            return 'No hay usuarios para compartir la canción.',400
-
-        if len(nuevos_usuarios_compartidos) == len(cancion.usuarios_compartidos):
-            return 'No hay usuarios nuevos para compartir la canción o los que están no pueden ser removidos.',400
-        
-        if len(nuevos_usuarios_compartidos) < len(cancion.usuarios_compartidos):
-            return ERROR_REMOVER_USUARIOS,409 
-
-        for i in range(len(cancion.usuarios_compartidos)): 
-            if cancion.usuarios_compartidos[i].nombre != nuevos_usuarios_compartidos[i]:
-                return ERROR_REMOVER_USUARIOS,409 
-        
         for i in range(len(cancion.usuarios_compartidos), len(nuevos_usuarios_compartidos)):
             new_user = Usuario.query.filter_by(nombre = nuevos_usuarios_compartidos[i]).first()
             if new_user is None:
@@ -215,6 +197,21 @@ class VistaCancionesUsuariosCompartidos(Resource):
             return {"error ": "internal error"}, 500
 
         return 'Canción compartida.'
+
+    def validaciones_de_datos_de_cancion(self, id_cancion):
+        if id_cancion > sys.maxsize:
+            return 'El campo id_cancion solo permite int como valor.',400
+
+        cancion = Cancion.query.get(id_cancion)
+        if cancion is None:
+            return "La canción no existe", 404
+        current_user = Usuario.query.get_or_404(get_jwt_identity())
+
+        if cancion.usuario != current_user.id:
+            return 'Solo el dueño de la canción puede compartirla.',400
+        
+        if isinstance(request.json["usuarios_compartidos"], list) == False:
+            return 'El campo usuarios_compartidos solo permite array como valor.',400
 
     @jwt_required()
     def get(self, id_cancion):
@@ -259,7 +256,7 @@ class VistaAlbumesUsuariosCompartidos(Resource):
         [usuario_schema.dump(al) for al in album.usuarios_compartidos]
 
         nuevos_usuarios_compartidos = list(OrderedDict.fromkeys(request.json["usuarios_compartidos"]))
-        result = self.validaciones_de_usuarios_compartidos(nuevos_usuarios_compartidos, album.usuarios_compartidos)
+        result = validaciones_de_usuarios_compartidos('el álbum', nuevos_usuarios_compartidos, album.usuarios_compartidos)
         if result != None:
             return result
 
@@ -295,20 +292,6 @@ class VistaAlbumesUsuariosCompartidos(Resource):
         if isinstance(request.json["usuarios_compartidos"], list) == False:
             return 'El campo usuarios_compartidos solo permite array como valor.',400
 
-    def validaciones_de_usuarios_compartidos(self, nuevos_usuarios_compartidos, usuarios_compartidos):
-        if len(nuevos_usuarios_compartidos) == 0:
-            return 'No hay usuarios para compartir el álbum.',400
-
-        if len(nuevos_usuarios_compartidos) == len(usuarios_compartidos):
-            return 'No hay usuarios nuevos para compartir el álbum o los que están no pueden ser removidos.',400
-        
-        if len(nuevos_usuarios_compartidos) < len(usuarios_compartidos):
-            return ERROR_REMOVER_USUARIOS,409 
-
-        for i in range(len(usuarios_compartidos)): 
-            if usuarios_compartidos[i].nombre != nuevos_usuarios_compartidos[i]:
-                return ERROR_REMOVER_USUARIOS,409 
-
     @jwt_required()
     def get(self, id_album):
         """
@@ -334,3 +317,17 @@ class VistaAlbumesUsuariosCompartidos(Resource):
             usuarios_compartidos.append(album.usuarios_compartidos[i].nombre)
 
         return {"usuarios_compartidos": usuarios_compartidos}
+
+def validaciones_de_usuarios_compartidos(origen, nuevos_usuarios_compartidos, usuarios_compartidos):
+        if len(nuevos_usuarios_compartidos) == 0:
+            return 'No hay usuarios para compartir '+origen+'.',400
+
+        if len(nuevos_usuarios_compartidos) == len(usuarios_compartidos):
+            return 'No hay usuarios nuevos para compartir '+origen+' o los que están no pueden ser removidos.',400
+        
+        if len(nuevos_usuarios_compartidos) < len(usuarios_compartidos):
+            return ERROR_REMOVER_USUARIOS,409 
+
+        for i in range(len(usuarios_compartidos)): 
+            if usuarios_compartidos[i].nombre != nuevos_usuarios_compartidos[i]:
+                return ERROR_REMOVER_USUARIOS,409 
