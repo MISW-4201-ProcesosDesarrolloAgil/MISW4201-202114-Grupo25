@@ -106,15 +106,4 @@ export class CancionListComponent implements OnInit {
     this.toastr.success(`La canción fue eliminada`, 'Eliminada exitosamente');
   }
 
-  getDuracion(cancion: Cancion): string {
-    // {{ cancion.minutos }}:{{ cancion.segundos }}
-    const { minutos, segundos } = cancion;
-    return `${this.getNumeroConCero(minutos)}:${this.getNumeroConCero(
-      segundos
-    )}`;
-  }
-
-  getNumeroConCero(num: number): String {
-    return num < 10 ? `0${num}` : num.toString();
-  }
 }

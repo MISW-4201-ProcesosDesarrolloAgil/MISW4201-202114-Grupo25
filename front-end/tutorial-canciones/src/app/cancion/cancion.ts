@@ -6,7 +6,7 @@ export class Cancion {
     interprete: string;
     id_usuario: number;
     albumes: Array<any>;
-    compartida: Boolean;
+    compartida: boolean;
 
     constructor(
         id: number,
@@ -18,13 +18,13 @@ export class Cancion {
         albumes: Array<any>,
         compartida: boolean
     ){
-        this.id = id,
-        this.titulo = titulo,
-        this.minutos = minutos,
-        this.segundos = segundos,
-        this.interprete = interprete,
-        this.id_usuario = id_usuario
-        this.albumes = albumes,
-        this.compartida = compartida
+        this.id = id;
+        this.titulo = titulo;
+        this.minutos = minutos;
+        this.segundos = segundos;
+        this.interprete = interprete;
+        this.id_usuario = id_usuario;
+        this.albumes = albumes;
+        this.compartida = compartida;
     }
 }

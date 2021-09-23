@@ -94,20 +94,6 @@ export class CancionDetailComponent implements OnInit {
     ]);
   }
 
-  getDuracion(cancion: Cancion): string {
-    if (!cancion) {
-      return '-';
-    }
-    const { minutos = 0, segundos = 0 } = cancion;
-    return `${this.getNumeroConCero(minutos)}:${this.getNumeroConCero(
-      segundos
-    )}`;
-  }
-
-  getNumeroConCero(num: number): String {
-    return num < 10 ? `0${num}` : num.toString();
-  }
-
   async compartirCancion() {
     this.modalConfig.modalTitle = `Compartir Canción ${this.cancion.titulo}`;
     return await this.modal.open();

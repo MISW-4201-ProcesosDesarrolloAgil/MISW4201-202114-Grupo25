@@ -9,7 +9,7 @@
           class="my-1 btn btn-outline-primary btn-circle"
           (click)="irCrearCancion()"
         >
-          <i class="bi bi-plus-lg"></i>
+          <em class="bi bi-plus-lg"></em>
         </button>
       </div>
 
@@ -38,8 +38,8 @@
               <td>{{ cancion.titulo }}</td>
               <td>
                 <div class="d-flex justify-content-end">
-                  <i *ngIf="cancion.compartida === true" class="bi bi-share shared_mark" title="Canción compartida"></i>
-                  <span>{{ getDuracion(cancion) }}</span>
+                  <em *ngIf="cancion.compartida === true" class="bi bi-share shared_mark" title="Canción compartida"></em>
+                  <span>{{ cancion | durationTransform }}</span>
                 </div>
               </td>
             </tr>

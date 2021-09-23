@@ -126,17 +126,6 @@ export class AlbumDetailComponent implements OnInit {
       });
   }
 
-  getDuracion(cancion: Cancion): string {
-    const { minutos = 0, segundos = 0 } = cancion;
-    return `${this.getNumeroConCero(minutos)}:${this.getNumeroConCero(
-      segundos
-    )}`;
-  }
-
-  getNumeroConCero(num: number): String {
-    return num < 10 ? `0${num}` : num.toString();
-  }
-
   getComentarioFormValido() {
     return !this.comentarioForm.invalid && this.comentario.trim().length > 0;
   }

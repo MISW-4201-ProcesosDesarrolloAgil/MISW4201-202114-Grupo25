@@ -8,6 +8,7 @@ import { AlbumEditComponent } from './album-edit/album-edit.component';
 import { AppHeaderModule } from '../app-header/app-header.module';
 import { AlbumJoinCancionComponent } from './album-join-cancion/album-join-cancion.component';
 import { ModalModule } from '../components/modal/modal.module';
+import { DurationPipeModule } from '../components/duration-pipe/duration-pipe.module';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,7 @@ import { ModalModule } from '../components/modal/modal.module';
     AlbumEditComponent,
     AlbumJoinCancionComponent,
   ],
-  imports: [CommonModule, ReactiveFormsModule, AppHeaderModule, ModalModule],
+  imports: [CommonModule, ReactiveFormsModule, AppHeaderModule, ModalModule, DurationPipeModule],
   exports: [
     AlbumListComponent,
     AlbumDetailComponent,
