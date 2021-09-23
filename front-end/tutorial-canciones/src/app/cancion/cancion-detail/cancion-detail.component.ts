@@ -126,7 +126,6 @@ export class CancionDetailComponent implements OnInit {
   }
 
   agregarUsuarios() {
-    console.log('enviar usuarios');
     if (!this.cancion?.id) {
       this.modal.close();
       this.toastr.error(
@@ -134,6 +133,13 @@ export class CancionDetailComponent implements OnInit {
         'Operación inválida'
       );
       return;
+    }
+
+    if (this.usuariosCompartidos === ""){
+      this.compartirCancionError = 'Debes escribir el nombre de al menos un usuario para compartir';
+      this.toastr.error(this.compartirCancionError, 'Error al compartir');
+
+      return
     }
 
     let listaUsuarios:Array<string> = [];

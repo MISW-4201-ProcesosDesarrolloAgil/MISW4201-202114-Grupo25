@@ -161,6 +161,13 @@ export class AlbumDetailComponent implements OnInit {
       return;
     }
 
+    if (this.usuariosCompartidos === ""){
+      this.compartirAlbumError = 'Debes escribir el nombre de al menos un usuario para compartir';
+      this.toastr.error(this.compartirAlbumError, 'Error al compartir');
+
+      return
+    }
+
     let listaUsuarios:Array<string> = [];
     if (this.usuariosCompartidosPrev.trim().length > 0) {
       listaUsuarios = [...this.usuariosCompartidosPrev.trim().split(',')];
