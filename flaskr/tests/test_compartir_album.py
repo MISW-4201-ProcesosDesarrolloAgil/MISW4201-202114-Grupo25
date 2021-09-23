@@ -9,14 +9,15 @@ from flaskr.tests.base_case import BaseCase, get_headers
 
 class TestVistaAlbumesUsuariosCompartidos(BaseCase):
     """ TestVistaAlbumesUsuariosCompartidos ejecuta tests de vista VistaAlbumesUsuariosCompartidos """
-
+    
+    ENDPOINT_ALBUM_1 = "album/1/usuarios-compartidos"
+    
     def test_compartir_satisfactoriamente(self):
         headers = get_headers(self.app)
         payload = json.dumps({
             "usuarios_compartidos": ["Jacquette", "Cassi"]
         })
-        endpoint = "album/1/usuarios-compartidos"
-        response = self.app.post(endpoint, headers=headers, data=payload)
+        response = self.app.post(self.ENDPOINT_ALBUM_1, headers=headers, data=payload)
         self.assertEqual(200, response.status_code)
         self.assertEqual("Álbum compartido.", response.json)
     
@@ -55,8 +56,7 @@ class TestVistaAlbumesUsuariosCompartidos(BaseCase):
         payload = json.dumps({
             "usuarios_compartidos": "Jacquette, Cassi"
         })
-        endpoint = "album/1/usuarios-compartidos"
-        response = self.app.post(endpoint, headers=headers, data=payload)
+        response = self.app.post(self.ENDPOINT_ALBUM_1, headers=headers, data=payload)
         self.assertEqual(400, response.status_code)
         self.assertEqual("El campo usuarios_compartidos solo permite array como valor.", response.json)
 
@@ -65,38 +65,32 @@ class TestVistaAlbumesUsuariosCompartidos(BaseCase):
         payload = json.dumps({
             "usuarios_compartidos": []
         })
-        endpoint = "album/1/usuarios-compartidos"
-        response = self.app.post(endpoint, headers=headers, data=payload)
+        response = self.app.post(self.ENDPOINT_ALBUM_1, headers=headers, data=payload)
         self.assertEqual(400, response.status_code)
         self.assertEqual("No hay usuarios para compartir el álbum.", response.json)
 
     def test_compartir_usuarios_repetidos(self):
         headers = get_headers(self.app)
         payload = json.dumps({"usuarios_compartidos": ["Jacquette", "Cassi"]})
-        endpoint = "album/1/usuarios-compartidos"
-        response = self.app.post(endpoint, headers=headers, data=payload)
+        self.app.post(self.ENDPOINT_ALBUM_1, headers=headers, data=payload)
         payload = json.dumps({ "usuarios_compartidos":  ["Jacquette", "Cassi"]})
-        endpoint = "album/1/usuarios-compartidos"
-        response = self.app.post(endpoint, headers=headers, data=payload)
+        response = self.app.post(self.ENDPOINT_ALBUM_1, headers=headers, data=payload)
         self.assertEqual(400, response.status_code)
         self.assertEqual("No hay usuarios nuevos para compartir el álbum o los que están no pueden ser removidos.", response.json)
 
     def test_remover_usuarios_compartidos(self):
         headers = get_headers(self.app)
         payload = json.dumps({"usuarios_compartidos": ["Jacquette", "Cassi"]})
-        endpoint = "album/1/usuarios-compartidos"
-        response = self.app.post(endpoint, headers=headers, data=payload)
+        self.app.post(self.ENDPOINT_ALBUM_1, headers=headers, data=payload)
         payload = json.dumps({"usuarios_compartidos": ["Jacquette"]})
-        endpoint = "album/1/usuarios-compartidos"
-        response = self.app.post(endpoint, headers=headers, data=payload)
+        response = self.app.post(self.ENDPOINT_ALBUM_1, headers=headers, data=payload)
         self.assertEqual(409, response.status_code)
         self.assertEqual("Los usuarios compartidos no pueden ser removidos.", response.json)
 
     def test_compartir_con_usuario_inexistente(self):
         headers = get_headers(self.app)
         payload = json.dumps({"usuarios_compartidos": ["Usuario-inexistente"]})
-        endpoint = "album/1/usuarios-compartidos"
-        response = self.app.post(endpoint, headers=headers, data=payload)
+        response = self.app.post(self.ENDPOINT_ALBUM_1, headers=headers, data=payload)
         self.assertEqual(404, response.status_code)
         self.assertEqual("El usuario: Usuario-inexistente, no existe.", response.json)
 
@@ -123,8 +117,7 @@ class TestVistaAlbumesUsuariosCompartidos(BaseCase):
     
     def test_obtener_usuarios_compartidos(self):
         headers = get_headers(self.app)
-        endpoint = "album/1/usuarios-compartidos"
-        response = self.app.get(endpoint, headers=headers)
+        response = self.app.get(self.ENDPOINT_ALBUM_1, headers=headers)
         self.assertEqual(200, response.status_code)
         self.assertEqual({'usuarios_compartidos': []}, response.json)
 
@@ -132,13 +125,15 @@ class TestModelosCompartirAlbum(BaseCase):
     """
     TestModelosCompartirAlbum ejecuta tests de modelo Album
     """
+    TITULO_ALBUM_1 = "Urban Menace"
+    DESCRIPCION_ALBUM_1 = "monetize mission-critical ROI"
 
     def test_crear_album(self):
         result = self.db.session.query(Album)
         self.assertEqual(result[0].id, 1)
-        self.assertEqual(result[0].titulo, "Urban Menace")
+        self.assertEqual(result[0].titulo, self.TITULO_ALBUM_1)
         self.assertEqual(result[0].anio, 1987)
-        self.assertEqual(result[0].descripcion, "monetize mission-critical ROI")
+        self.assertEqual(result[0].descripcion, self.DESCRIPCION_ALBUM_1)
         self.assertEqual(result[0].usuario, 1)
 
     def test_compartir_album_con_duenio(self):
@@ -164,9 +159,9 @@ class TestModelosCompartirAlbum(BaseCase):
 
         result = self.db.session.query(Album)
         self.assertEqual(result[0].id, 1)
-        self.assertEqual(result[0].titulo, "Urban Menace")
+        self.assertEqual(result[0].titulo, self.TITULO_ALBUM_1)
         self.assertEqual(result[0].anio, 1987)
-        self.assertEqual(result[0].descripcion, "monetize mission-critical ROI")
+        self.assertEqual(result[0].descripcion, self.DESCRIPCION_ALBUM_1)
         self.assertEqual(result[0].usuario, 1)
         self.assertEqual(result[0].usuarios_compartidos, usuarios_compartidos)
 
@@ -201,9 +196,9 @@ class TestModelosCompartirAlbum(BaseCase):
 
         result = self.db.session.query(Album)
         self.assertEqual(result[0].id, 1)
-        self.assertEqual(result[0].titulo, "Urban Menace")
+        self.assertEqual(result[0].titulo, self.TITULO_ALBUM_1)
         self.assertEqual(result[0].anio, 1987)
-        self.assertEqual(result[0].descripcion, "monetize mission-critical ROI")
+        self.assertEqual(result[0].descripcion, self.DESCRIPCION_ALBUM_1)
         self.assertEqual(result[0].usuario, 1)
         self.assertEqual(result[0].usuarios_compartidos, usuarios_compartidos)
 

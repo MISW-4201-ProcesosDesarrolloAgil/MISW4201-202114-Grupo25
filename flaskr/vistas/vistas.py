@@ -10,6 +10,7 @@ import logging
 cancion_schema = CancionSchema()
 usuario_schema = UsuarioSchema()
 album_schema = AlbumSchema()
+ERROR_REMOVER_USUARIOS = 'Los usuarios compartidos no pueden ser removidos.'
 
 
 class VistaCanciones(Resource):
@@ -167,6 +168,7 @@ class VistaCancionesUsuariosCompartidos(Resource):
             Comparte una canción a un listado de usuarios
             :return: string, status code 200
         """
+
         if id_cancion > sys.maxsize:
             return 'El campo id_cancion solo permite int como valor.',400
 
@@ -191,19 +193,19 @@ class VistaCancionesUsuariosCompartidos(Resource):
             return 'No hay usuarios nuevos para compartir la canción o los que están no pueden ser removidos.',400
         
         if len(nuevos_usuarios_compartidos) < len(cancion.usuarios_compartidos):
-            return 'Los usuarios compartidos no pueden ser removidos.',409 
+            return ERROR_REMOVER_USUARIOS,409 
 
         for i in range(len(cancion.usuarios_compartidos)): 
             if cancion.usuarios_compartidos[i].nombre != nuevos_usuarios_compartidos[i]:
-                return 'Los usuarios compartidos no pueden ser removidos.',409 
+                return ERROR_REMOVER_USUARIOS,409 
         
         for i in range(len(cancion.usuarios_compartidos), len(nuevos_usuarios_compartidos)):
-            newUser = Usuario.query.filter_by(nombre = nuevos_usuarios_compartidos[i]).first()
-            if newUser is None:
+            new_user = Usuario.query.filter_by(nombre = nuevos_usuarios_compartidos[i]).first()
+            if new_user is None:
                 return "El usuario: " + nuevos_usuarios_compartidos[i] + ", no existe.", 404
             
             try:
-                cancion.usuarios_compartidos.append(newUser)
+                cancion.usuarios_compartidos.append(new_user)
             except ValueError:
                 return 'La canción no puede ser compartida con el dueño de la misma.',409
         try:
@@ -249,43 +251,25 @@ class VistaAlbumesUsuariosCompartidos(Resource):
             Comparte un álbum a un listado de usuarios
             :return: string, status code 200
         """
-        if id_album > sys.maxsize:
-            return 'El campo id_album solo permite int como valor.',400
+        result = self.validaciones_de_datos_de_album(id_album)
+        if result != None:
+            return result
 
         album = Album.query.get(id_album)
-        if album is None:
-            return "El álbum no existe", 404
         [usuario_schema.dump(al) for al in album.usuarios_compartidos]
-        current_user = Usuario.query.get_or_404(get_jwt_identity())
-
-        if album.usuario != current_user.id:
-            return 'Solo el dueño del álbum puede compartirlo.',400
-
-        if isinstance(request.json["usuarios_compartidos"], list) == False:
-            return 'El campo usuarios_compartidos solo permite array como valor.',400
 
         nuevos_usuarios_compartidos = list(OrderedDict.fromkeys(request.json["usuarios_compartidos"]))
+        result = self.validaciones_de_usuarios_compartidos(nuevos_usuarios_compartidos, album.usuarios_compartidos)
+        if result != None:
+            return result
 
-        if len(nuevos_usuarios_compartidos) == 0:
-            return 'No hay usuarios para compartir el álbum.',400
-
-        if len(nuevos_usuarios_compartidos) == len(album.usuarios_compartidos):
-            return 'No hay usuarios nuevos para compartir el álbum o los que están no pueden ser removidos.',400
-        
-        if len(nuevos_usuarios_compartidos) < len(album.usuarios_compartidos):
-            return 'Los usuarios compartidos no pueden ser removidos.',409 
-
-        for i in range(len(album.usuarios_compartidos)): 
-            if album.usuarios_compartidos[i].nombre != nuevos_usuarios_compartidos[i]:
-                return 'Los usuarios compartidos no pueden ser removidos.',409 
-        
         for i in range(len(album.usuarios_compartidos), len(nuevos_usuarios_compartidos)):
-            newUser = Usuario.query.filter_by(nombre = nuevos_usuarios_compartidos[i]).first()
-            if newUser is None:
+            new_user = Usuario.query.filter_by(nombre = nuevos_usuarios_compartidos[i]).first()
+            if new_user is None:
                 return "El usuario: " + nuevos_usuarios_compartidos[i] + ", no existe.", 404
             
             try:
-                album.usuarios_compartidos.append(newUser)
+                album.usuarios_compartidos.append(new_user)
             except ValueError:
                 return 'El álbum no puede ser compartido con el dueño del mismo.',409
         try:
@@ -295,6 +279,35 @@ class VistaAlbumesUsuariosCompartidos(Resource):
             return {"error ": "internal error"}, 500
 
         return 'Álbum compartido.'
+
+    def validaciones_de_datos_de_album(self, id_album):
+        if id_album > sys.maxsize:
+            return 'El campo id_album solo permite int como valor.',400
+
+        album = Album.query.get(id_album)
+        if album is None:
+            return "El álbum no existe", 404
+        current_user = Usuario.query.get_or_404(get_jwt_identity())
+
+        if album.usuario != current_user.id:
+            return 'Solo el dueño del álbum puede compartirlo.',400
+
+        if isinstance(request.json["usuarios_compartidos"], list) == False:
+            return 'El campo usuarios_compartidos solo permite array como valor.',400
+
+    def validaciones_de_usuarios_compartidos(self, nuevos_usuarios_compartidos, usuarios_compartidos):
+        if len(nuevos_usuarios_compartidos) == 0:
+            return 'No hay usuarios para compartir el álbum.',400
+
+        if len(nuevos_usuarios_compartidos) == len(usuarios_compartidos):
+            return 'No hay usuarios nuevos para compartir el álbum o los que están no pueden ser removidos.',400
+        
+        if len(nuevos_usuarios_compartidos) < len(usuarios_compartidos):
+            return ERROR_REMOVER_USUARIOS,409 
+
+        for i in range(len(usuarios_compartidos)): 
+            if usuarios_compartidos[i].nombre != nuevos_usuarios_compartidos[i]:
+                return ERROR_REMOVER_USUARIOS,409 
 
     @jwt_required()
     def get(self, id_album):
