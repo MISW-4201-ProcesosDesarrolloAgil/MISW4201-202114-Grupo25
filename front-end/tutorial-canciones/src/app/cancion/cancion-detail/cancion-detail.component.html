@@ -81,7 +81,7 @@
     </div>
     <div *ngIf="this.cancionCompartida" class="shared-users-list">
       <div class="shared-users-list__title">
-        <i class="bi bi-share"></i>
+        <em class="bi bi-share"></em>
         <span>Esta canción está compartida con:</span>
       </div>
       <ul>
@@ -122,7 +122,7 @@
               [disabled]="!this.getUsuariosCompartirValido()"
               (click)="this.agregarUsuarios()"
             >
-              Enviar
+              Compartir
             </button>
           </div>
         </div>

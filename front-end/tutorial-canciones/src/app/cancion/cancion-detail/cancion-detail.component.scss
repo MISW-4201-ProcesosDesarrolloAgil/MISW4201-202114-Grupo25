@@ -7,32 +7,3 @@
     margin-left: 5px;
   }
 }
-
-.compartir-error {
-  color: #F34141;
-}
-
-
-.shared-users-list {
-  margin-top: 1.5rem;
-
-  &__title {
-    display: flex;
-    flex-direction: row;
-  }
-
-  i {
-    background-color: $yellow-logo;
-    border-radius: 3px;
-    color: $dark-gray;
-    margin-right: 5px;
-    padding: 7px 14px;
-    position: relative;
-    top: -8px;
-    font-weight: bold;
-  }
-
-  span {
-    font-weight: bold;
-  }
-}
