@@ -40,10 +40,16 @@ export class CancionListComponent implements OnInit {
   }
 
   getCanciones(): void {
-    this.cancionService.getCanciones(this.token).subscribe((canciones) => {
-      this.canciones = canciones;
-      this.mostrarCanciones = canciones;
-      this.onSelect(this.mostrarCanciones[0], 0);
+    this.cancionService.getCanciones(this.token).subscribe((canciones:any) => {
+      if (Array.isArray(canciones)) {
+        this.canciones = canciones.map(cancion => {
+          const esCancionCompartida = cancion.usuario !== this.userId;
+          cancion.compartida = esCancionCompartida;
+          return cancion;
+        });
+        this.mostrarCanciones = canciones;
+        this.onSelect(this.mostrarCanciones[0], 0);
+      }
     });
   }
 
@@ -100,15 +106,4 @@ export class CancionListComponent implements OnInit {
     this.toastr.success(`La canción fue eliminada`, 'Eliminada exitosamente');
   }
 
-  getDuracion(cancion: Cancion): string {
-    // {{ cancion.minutos }}:{{ cancion.segundos }}
-    const { minutos, segundos } = cancion;
-    return `${this.getNumeroConCero(minutos)}:${this.getNumeroConCero(
-      segundos
-    )}`;
-  }
-
-  getNumeroConCero(num: number): String {
-    return num < 10 ? `0${num}` : num.toString();
-  }
 }

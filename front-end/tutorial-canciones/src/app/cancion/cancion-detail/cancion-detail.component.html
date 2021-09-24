@@ -1,36 +1,39 @@
 <div class="container">
   <div class="row">
     <div class="col-12 text-center mb-2">
-      <label class="fs-4 fw-bold ms-2 me-2"
-        >Canción: {{ cancion?.titulo }}</label
-      >
-      <button
-        *ngIf="cancion"
-        type="button"
-        class="btn btn-outline-success ms-1 me-1"
-        (click)="goToEdit()"
-        title="Editar canción"
-      >
-        <i class="bi bi-pencil-square"></i>
-      </button>
-      <button
-        *ngIf="cancion"
-        type="button"
-        class="btn btn-outline-danger ms-1 me-1"
-        (click)="compartirCancion()"
-        title="Compartir canción"
-      >
-        <i class="bi bi-share"></i>
-      </button>
-      <button
-        *ngIf="cancion"
-        type="button"
-        class="btn btn-outline-danger me-1"
-        (click)="eliminarCancion()"
-        title="Eliminar canción"
-      >
-        <i class="bi bi-trash-fill"></i>
-      </button>
+      <label class="fs-4 fw-bold ms-2 me-2">
+        <em *ngIf="cancion?.compartida === true" class="bi bi-share shared_mark" title="Canción compartida"></em>
+        Canción: {{ cancion?.titulo }}
+      </label>
+      <div *ngIf="!cancion?.compartida" style="display: inline-block;">
+        <button
+          *ngIf="cancion"
+          type="button"
+          class="btn btn-outline-success ms-1 me-1"
+          (click)="goToEdit()"
+          title="Editar canción"
+        >
+          <i class="bi bi-pencil-square"></i>
+        </button>
+        <button
+          *ngIf="cancion"
+          type="button"
+          class="btn btn-outline-danger ms-1 me-1"
+          (click)="compartirCancion()"
+          title="Compartir canción"
+        >
+          <i class="bi bi-share"></i>
+        </button>
+        <button
+          *ngIf="cancion"
+          type="button"
+          class="btn btn-outline-danger me-1"
+          (click)="eliminarCancion()"
+          title="Eliminar canción"
+        >
+          <i class="bi bi-trash-fill"></i>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -40,7 +43,7 @@
         <div class="card-body">
           <p class="my-0">
             <span class="fw-bold">Duración: </span>
-            <span class="text-capitalize">{{ getDuracion(cancion) }}</span>
+            <span class="text-capitalize">{{ cancion | durationTransform }}</span>
           </p>
         </div>
       </div>

@@ -62,7 +62,10 @@ export class CancionDetailComponent implements OnInit {
   }
 
   consultarUsuariosCompartidos() {
-    if (!this.cancion?.id) {
+    this.cancionCompartida = false;
+    this.usuariosCompartidosPrev = '';
+
+    if (!this.cancion?.id || this.cancion?.compartida) {
       return;
     }
     this.cancionCompartida = false;
@@ -90,20 +93,6 @@ export class CancionDetailComponent implements OnInit {
     this.routerPath.navigate([
       `/canciones/edit/${this.cancion.id}/${this.userId}/${this.token}`,
     ]);
-  }
-
-  getDuracion(cancion: Cancion): string {
-    if (!cancion) {
-      return '-';
-    }
-    const { minutos = 0, segundos = 0 } = cancion;
-    return `${this.getNumeroConCero(minutos)}:${this.getNumeroConCero(
-      segundos
-    )}`;
-  }
-
-  getNumeroConCero(num: number): String {
-    return num < 10 ? `0${num}` : num.toString();
   }
 
   async compartirCancion() {

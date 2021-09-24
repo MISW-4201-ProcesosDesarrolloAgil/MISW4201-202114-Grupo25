@@ -77,6 +77,7 @@ class CancionSchema(SQLAlchemyAutoSchema):
          model = Cancion
          include_relationships = True
          load_instance = True
+         include_fk = True
 
 class AlbumSchema(SQLAlchemyAutoSchema):
     medio = EnumADiccionario(attribute=("medio"))
