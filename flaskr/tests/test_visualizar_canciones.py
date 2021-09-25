@@ -24,10 +24,6 @@ class TestVistaVisualizarCanciones(BaseCase):
             "Authorization": f"Bearer {token}"
         }
 
-        # Configuracion: Se comparte la cancion para probar posteriormente
-        #self.app.post("cancion/1/usuarios-compartidos", headers=headers,
-         #                        data=json.dumps({"usuarios_compartidos": ["Jacquette", "Cassi"]}))
-
         endpoint = "/canciones"
         response = self.app.get(endpoint, headers=headers)
 
