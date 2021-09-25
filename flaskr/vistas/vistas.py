@@ -106,25 +106,54 @@ class VistaLogIn(Resource):
             return {"mensaje":"Inicio de sesión exitoso", "token": token_de_acceso}
 
 class VistaAlbumsUsuario(Resource):
+    """
+    VistaAlbumUsuario se encarga de administrar los recursos relacionados a los albumes para un usuario dado
+    """
 
     @jwt_required()
-    def post(self, id_usuario):
-        nuevo_album = Album(titulo=request.json["titulo"], anio=request.json["anio"], descripcion=request.json["descripcion"], medio=request.json["medio"])
-        usuario = Usuario.query.get_or_404(id_usuario)
-        usuario.albumes.append(nuevo_album)
+    def post(self):
+        """
+        Metodo post de la vista de comentarios.
+        Añade un nuevo comentario a la base de datos
+
+        :return: Album creado, Estatus Http 201
+        """
+        user_id = get_jwt_identity()
+        nuevo_album = Album(
+            titulo=request.json.get("titulo"),
+            anio=request.json.get("anio"),
+            descripcion=request.json.get("descripcion"),
+            medio=request.json.get("medio"),
+            usuario=user_id,
+        )
 
         try:
-            db.session.commit()
-        except IntegrityError:
-            db.session.rollback()
-            return 'El usuario ya tiene un album con dicho nombre',409
+            Album.crear_nuevo_album(nuevo_album)
+        except Exception as e:
+            return f"No se puede añadir album. Error: {e}", 400
 
-        return album_schema.dump(nuevo_album)
+        return album_schema.dump(nuevo_album), 201
 
     @jwt_required()
-    def get(self, id_usuario):
-        usuario = Usuario.query.get_or_404(id_usuario)
-        return [album_schema.dump(al) for al in usuario.albumes]
+    def get(self):
+        """
+        Metodo get de la vista de comentarios.
+        Añade un nuevo comentario a la base de datos
+
+        :return: Album creado, Estatus Http 201
+        """
+        user_id = get_jwt_identity()
+
+        a_propios = Album.query.filter_by(usuario=user_id).all()
+        a_propias_serializadas = [album_schema.dump(al) for al in a_propios]
+
+        a_compartidos = Album.query.filter(Album.usuarios_compartidos.any(id=user_id)).all()
+        a_compartidas_serializadas = [album_schema.dump(al) for al in a_compartidos]
+
+        if len(a_propias_serializadas + a_compartidas_serializadas) == 0:
+            return 'El usuario no tiene albumes compartidos ni propios.', 400
+
+        return (a_propias_serializadas + a_compartidas_serializadas), 200
 
 class VistaCancionesAlbum(Resource):
 
