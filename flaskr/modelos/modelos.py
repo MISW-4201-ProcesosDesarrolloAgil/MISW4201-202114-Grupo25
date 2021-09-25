@@ -93,6 +93,7 @@ class AlbumSchema(SQLAlchemyAutoSchema):
          model = Album
          include_relationships = True
          load_instance = True
+         include_fk = True
 
 class UsuarioSchema(SQLAlchemyAutoSchema):
     class Meta:

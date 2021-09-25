@@ -135,9 +135,25 @@ class VistaAlbumsUsuario(Resource):
         return album_schema.dump(nuevo_album), 201
 
     @jwt_required()
-    def get(self, id_usuario):
-        usuario = Usuario.query.get_or_404(id_usuario)
-        return [album_schema.dump(al) for al in usuario.albumes]
+    def get(self):
+        """
+        Metodo get de la vista de comentarios.
+        Añade un nuevo comentario a la base de datos
+
+        :return: Album creado, Estatus Http 201
+        """
+        user_id = get_jwt_identity()
+
+        a_propios = Album.query.filter_by(usuario=user_id).all()
+        a_propias_serializadas = [album_schema.dump(al) for al in a_propios]
+
+        a_compartidos = Album.query.filter(Album.usuarios_compartidos.any(id=user_id)).all()
+        a_compartidas_serializadas = [album_schema.dump(al) for al in a_compartidos]
+
+        if len(a_propias_serializadas + a_compartidas_serializadas) == 0:
+            return 'El usuario no tiene albumes compartidos ni propios.', 400
+
+        return (a_propias_serializadas + a_compartidas_serializadas), 200
 
 class VistaCancionesAlbum(Resource):
 
