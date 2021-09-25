@@ -18,7 +18,7 @@ export class AlbumService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     })
-    return this.http.get<Album[]>(`${this.backUrl}/usuario/${usuario}/albumes`, {headers: headers})
+    return this.http.get<Album[]>(`${this.backUrl}albumes`, {headers: headers})
   }
 
   getCancionesAlbum(idAlbum: number, token: string): Observable<Cancion[]>{
@@ -28,11 +28,11 @@ export class AlbumService {
     return this.http.get<Cancion[]>(`${this.backUrl}/album/${idAlbum}/canciones`, {headers: headers})
   }
 
-  crearAlbum(idUsuario: number, token: string, album: Album):Observable<Album>{
+  crearAlbum(token: string, album: Album):Observable<Album>{
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     })
-    return this.http.post<Album>(`${this.backUrl}/usuario/${idUsuario}/albumes`, album, {headers: headers})
+    return this.http.post<Album>(`${this.backUrl}/albumes`, album, {headers: headers})
   }
 
   getAlbum(albumId: number): Observable<Album>{
