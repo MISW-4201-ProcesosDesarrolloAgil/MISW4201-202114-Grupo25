@@ -57,7 +57,7 @@ class Album(db.Model):
         return value
 
     @classmethod
-    def crear_nuevo_album(self, album):
+    def crear_nuevo_album(cls, album):
         """
         Añade un nuevo album a los albumes del usuario
         """
