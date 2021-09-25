@@ -53,7 +53,7 @@ pipeline {
                     docker.image('python:3.7.6').inside {
                         sh '''
                             cd flaskr
-                            python -m unittest discover -s tests -v
+                            python -m pytest -v
                         '''
                     }
                 }
@@ -65,7 +65,7 @@ pipeline {
                     docker.image('python:3.7.6').inside {
                         sh '''
                             cd flaskr
-                            python -m coverage run -m unittest discover -s tests -v
+                            python -m coverage run -m pytest -v
                             python -m coverage html
                         ''' 
                     }
