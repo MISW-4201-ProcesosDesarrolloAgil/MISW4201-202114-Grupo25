@@ -75,7 +75,7 @@ export class AlbumCreateComponent implements OnInit {
 
   createAlbum(newAlbum: Album){
     this.albumForm.get('anio')?.setValue(parseInt(this.albumForm.get('anio')?.value))
-    this.albumService.crearAlbum(this.userId, this.token, newAlbum)
+    this.albumService.crearAlbum(this.token, newAlbum)
     .subscribe(album => {
       this.showSuccess(album)
       this.albumForm.reset()
