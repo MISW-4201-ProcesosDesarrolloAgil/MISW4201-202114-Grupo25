@@ -86,4 +86,4 @@ jobs:
           docker_build_args: |
             ENV_TYPE
         env:
-            ENV_TYPE: production
+            ENV_TYPE: qa

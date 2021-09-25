@@ -56,6 +56,14 @@ class Album(db.Model):
             raise ValueError
         return value
 
+    @classmethod
+    def crear_nuevo_album(cls, album):
+        """
+        Añade un nuevo album a los albumes del usuario
+        """
+        db.session.add(album)
+        db.session.commit()
+
 class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(50))
@@ -85,6 +93,7 @@ class AlbumSchema(SQLAlchemyAutoSchema):
          model = Album
          include_relationships = True
          load_instance = True
+         include_fk = True
 
 class UsuarioSchema(SQLAlchemyAutoSchema):
     class Meta:

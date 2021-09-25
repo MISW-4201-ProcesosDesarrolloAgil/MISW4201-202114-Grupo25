@@ -39,10 +39,17 @@ export class AlbumListComponent implements OnInit {
   getAlbumes():void{
     this.albumService.getAlbumes(this.userId, this.token)
     .subscribe(albumes => {
-      this.albumes = albumes
-      this.mostrarAlbumes = albumes
-      if(albumes.length>0){
-        this.onSelect(this.mostrarAlbumes[0], 0)
+      if (Array.isArray(albumes)) {
+        this.albumes = albumes.map(album => {
+          const esAlbumCompartido = album.usuario !== this.userId;
+          album.compartido = esAlbumCompartido;
+          return album;
+        });
+
+        this.mostrarAlbumes = albumes;
+        if(albumes.length>0){
+          this.onSelect(this.mostrarAlbumes[0], 0)
+        }
       }
     },
     error => {
