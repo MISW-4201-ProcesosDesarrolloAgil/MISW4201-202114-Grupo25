@@ -24,6 +24,9 @@
         </li>
       </ul>
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item" style="border-right: 1px solid #dedede">
+          <a class="nav-link" (click)="this.mostrarCreditos()">Acerca de</a>
+        </li>
         <li class="nav-item">
           <a class="nav-link">{{this.userName}}</a>
         </li>
@@ -33,4 +36,22 @@
       </ul>
     </div>
   </div>
+
+  <app-modal #modal [modalConfig]="modalConfig">
+    <div>
+      <h3 class="text-center">Ionic fue desarrollado por</h3>
+      <div>
+        <ul>
+          <li>Anderson Santamaria</li>
+          <li>Andres Cendales</li>
+          <li>Jhon Jairo Moreno</li>
+          <li>Juan Sebastian Vanegas</li>
+        </ul>
+        <div class="text-center">
+          <p>Grupo Cepa Colombia / MISO 4201</p>
+          <p>Colombia 2021</p>
+        </div>
+      </div>
+    </div>
+  </app-modal>
 </nav>
