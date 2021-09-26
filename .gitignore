@@ -149,3 +149,9 @@ flaskr/tutorial_canciones.db
 
 #Idea
 .idea/*
+
+# SQLITE
+*.db
+
+# Pychar Configurations
+.run*

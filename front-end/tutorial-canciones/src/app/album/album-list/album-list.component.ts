@@ -7,7 +7,7 @@ import { AlbumService } from '../album.service';
 @Component({
   selector: 'app-album-list',
   templateUrl: './album-list.component.html',
-  styleUrls: ['./album-list.component.css']
+  styleUrls: ['./album-list.component.scss']
 })
 export class AlbumListComponent implements OnInit {
 
@@ -17,7 +17,7 @@ export class AlbumListComponent implements OnInit {
     private toastr: ToastrService,
     private routerPath: Router
   ) { }
-  
+
   userId: number
   token: string
   albumes: Array<Album>
@@ -39,10 +39,17 @@ export class AlbumListComponent implements OnInit {
   getAlbumes():void{
     this.albumService.getAlbumes(this.userId, this.token)
     .subscribe(albumes => {
-      this.albumes = albumes
-      this.mostrarAlbumes = albumes
-      if(albumes.length>0){
-        this.onSelect(this.mostrarAlbumes[0], 0)
+      if (Array.isArray(albumes)) {
+        this.albumes = albumes.map(album => {
+          const esAlbumCompartido = album.usuario !== this.userId;
+          album.compartido = esAlbumCompartido;
+          return album;
+        });
+
+        this.mostrarAlbumes = albumes;
+        if(albumes.length>0){
+          this.onSelect(this.mostrarAlbumes[0], 0)
+        }
       }
     },
     error => {
@@ -57,7 +64,7 @@ export class AlbumListComponent implements OnInit {
         this.showError("Ha ocurrido un error. " + error.message)
       }
     })
-    
+
   }
 
   onSelect(a: Album, index: number){

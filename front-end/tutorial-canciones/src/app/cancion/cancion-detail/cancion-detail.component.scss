@@ -1,0 +1,9 @@
+@import '../../../common-styles/colors.scss';
+@import '../../../common-styles/common-components.scss';
+
+.div-share-btn-wrapper {
+  justify-content: end;
+  .btn {
+    margin-left: 5px;
+  }
+}
