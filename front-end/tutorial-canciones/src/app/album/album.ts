@@ -7,7 +7,8 @@ export class Album {
     medio: Medio;
     usuario: number;
     interpretes: Array<string>;
-    canciones: Array<Cancion>
+    canciones: Array<Cancion>;
+    compartido: boolean;
 
     constructor(
         id: number,
@@ -17,16 +18,18 @@ export class Album {
         medio: Medio,
         usuario: number,
         interpretes: Array<string>,
-        canciones: Array<Cancion>
+        canciones: Array<Cancion>,
+        compartido: boolean
     ){
-        this.id = id,
-        this.titulo = titulo,
-        this.anio = anio,
-        this.descripcion = descripcion,
-        this.medio = medio,
-        this.usuario = usuario,
-        this.interpretes = interpretes,
-        this.canciones = canciones
+        this.id = id;
+        this.titulo = titulo;
+        this.anio = anio;
+        this.descripcion = descripcion;
+        this.medio = medio;
+        this.usuario = usuario;
+        this.interpretes = interpretes;
+        this.canciones = canciones;
+        this.compartido = compartido;
     }
 }
 
@@ -63,4 +66,24 @@ export class Cancion{
         this.segundos = segundos,
         this.interprete = interprete
     }
+}
+
+
+export class Comentario {
+  id: number;
+  user: any;
+  fecha_creacion: string;
+  descripcion: string;
+
+  constructor(
+    id: number,
+    user: any,
+    fecha_creacion: string,
+    descripcion: string
+  ) {
+    this.id = id;
+    this.user = user;
+    this.fecha_creacion = fecha_creacion;
+    this.descripcion = descripcion
+  }
 }

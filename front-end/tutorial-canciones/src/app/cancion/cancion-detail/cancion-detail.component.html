@@ -1,10 +1,39 @@
 <div class="container">
-
   <div class="row">
-    <div class="col-12 text-center mb-2" >
-      <label class="fs-4 fw-bold">Canción: {{cancion?.titulo}}</label>
-      <button *ngIf="cancion" type="button" class="btn btn-outline-success ms-3 me-2" (click)="goToEdit()" title="Editar canción"><i class="bi bi-pencil-square"></i></button>
-      <button *ngIf="cancion" type="button" class="btn btn-outline-danger me-1" (click)="eliminarCancion()" title="Eliminar canción"><i class="bi bi-trash-fill"></i></button>
+    <div class="col-12 text-center mb-2">
+      <label class="fs-4 fw-bold ms-2 me-2">
+        <em *ngIf="cancion?.compartida === true" class="bi bi-share shared_mark" title="Canción compartida"></em>
+        Canción: {{ cancion?.titulo }}
+      </label>
+      <div *ngIf="!cancion?.compartida" style="display: inline-block;">
+        <button
+          *ngIf="cancion"
+          type="button"
+          class="btn btn-outline-success ms-1 me-1"
+          (click)="goToEdit()"
+          title="Editar canción"
+        >
+          <i class="bi bi-pencil-square"></i>
+        </button>
+        <button
+          *ngIf="cancion"
+          type="button"
+          class="btn btn-outline-danger ms-1 me-1"
+          (click)="compartirCancion()"
+          title="Compartir canción"
+        >
+          <i class="bi bi-share"></i>
+        </button>
+        <button
+          *ngIf="cancion"
+          type="button"
+          class="btn btn-outline-danger me-1"
+          (click)="eliminarCancion()"
+          title="Eliminar canción"
+        >
+          <i class="bi bi-trash-fill"></i>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -12,14 +41,20 @@
     <div class="col-6">
       <div class="card">
         <div class="card-body">
-          <p class="my-0"><span class="fw-bold">Duración: </span> <span class="text-capitalize">{{cancion?.minutos}}:{{cancion?.segundos}}</span></p>
+          <p class="my-0">
+            <span class="fw-bold">Duración: </span>
+            <span class="text-capitalize">{{ cancion | durationTransform }}</span>
+          </p>
         </div>
       </div>
     </div>
     <div class="col-6">
       <div class="card">
         <div class="card-body">
-          <p class="my-0"><span class="fw-bold">Intérpretes: </span> <span class="text-capitalize">{{cancion?.interprete}}</span></p>
+          <p class="my-0">
+            <span class="fw-bold">Intérpretes: </span>
+            <span class="text-capitalize">{{ cancion?.interprete }}</span>
+          </p>
         </div>
       </div>
     </div>
@@ -30,7 +65,7 @@
       <h5>Álbumes</h5>
     </div>
     <div class="col-12">
-      <table class="table table-hover table-bordered" >
+      <table class="table table-hover table-bordered ionic-table">
         <thead class="table-light">
           <tr>
             <th scope="col" class="text-center">Título</th>
@@ -39,13 +74,62 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let album of cancion?.albumes" >
-            <td >{{album.titulo}}</td>
-            <td class="text-center">{{album.anio}}</td>
-            <td >{{album.medio.llave}}</td>
+          <tr *ngFor="let album of cancion?.albumes">
+            <td>{{ album.titulo }}</td>
+            <td class="text-center">{{ album.anio }}</td>
+            <td>{{ album.medio?.llave }}</td>
           </tr>
         </tbody>
       </table>
     </div>
+    <div *ngIf="this.cancionCompartida" class="shared-users-list">
+      <div class="shared-users-list__title">
+        <em class="bi bi-share"></em>
+        <span>Esta canción está compartida con:</span>
+      </div>
+      <ul>
+        <li *ngFor="let usuario of this.usuariosCompartidosPrev.split(',')">
+          {{ usuario }}
+        </li>
+      </ul>
+    </div>
   </div>
+
+  <app-modal #modal [modalConfig]="modalConfig">
+    <div>
+      <form
+        [formGroup]="this.usuariosCompartidosForm"
+        (ngSubmit)="!this.getUsuariosCompartirValido()"
+      >
+        <p>
+          A continuación, escribe el nombre de usuario de los colecccionistas
+          con quienes quieres compartir esta canción
+        </p>
+        <textarea
+          class="d-block form-control txt-usuarios-compartido"
+          maxlength="1000"
+          name="txt-comentario"
+          id="txt-comentario"
+          formControlName="comentario"
+          [(ngModel)]="this.usuariosCompartidos"
+        ></textarea>
+        <p class="compartir-error">{{ this.compartirCancionError }}</p>
+        <div>
+          <hr />
+          <div class="d-flex div-share-btn-wrapper">
+            <button class="btn btn-danger" (click)="this.cerrarModal()">
+              Cancelar
+            </button>
+            <button
+              class="btn btn-success"
+              [disabled]="!this.getUsuariosCompartirValido()"
+              (click)="this.agregarUsuarios()"
+            >
+              Compartir
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </app-modal>
 </div>
