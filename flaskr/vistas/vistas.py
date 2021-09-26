@@ -151,7 +151,7 @@ class VistaAlbumsUsuario(Resource):
         a_compartidas_serializadas = [album_schema.dump(al) for al in a_compartidos]
 
         if len(a_propias_serializadas + a_compartidas_serializadas) == 0:
-            return 'El usuario no tiene albumes compartidos ni propios.', 400
+            return 'El usuario no tiene albumes compartidos ni propios.', 200
 
         return (a_propias_serializadas + a_compartidas_serializadas), 200
 
