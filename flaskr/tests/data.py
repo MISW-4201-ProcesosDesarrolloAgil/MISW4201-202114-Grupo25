@@ -6,7 +6,8 @@ from flaskr.modelos.comentarios import ComentarioModel
 
 def seed_data(db):
     """seed_data se encarga de añadir datos de prueba con fines de testing"""
-    db.session.add(Usuario(id=1, nombre="Enrique", contrasena="H0zksFgA8k6"))
+    main_test_user = Usuario(id=1, nombre="Enrique", contrasena="H0zksFgA8k6")
+    db.session.add(main_test_user)
     db.session.add(Usuario(id=2, nombre="Jacquette", contrasena="CMN3W3HoZe"))
     db.session.add(Usuario(id=3, nombre="Cassi", contrasena="FAjq5MZ"))
     db.session.add(Usuario(id=4, nombre="Lauren", contrasena="Czk0OhCOLKTk"))
@@ -19,7 +20,7 @@ def seed_data(db):
 
     db.session.add(
         Album(id=1, titulo='Urban Menace', anio=1987, descripcion='monetize mission-critical ROI', usuario=1))
-    db.session.add(Album(id=2, titulo='Loft', anio=2008, descripcion='engineer scalable bandwidth', usuario=2))
+    db.session.add(Album(id=2, titulo='Loft', anio=2008, descripcion='engineer scalable bandwidth', usuario=2,  usuarios_compartidos=[main_test_user]))
     db.session.add(Album(id=3, titulo='Warped Ones, The (Kyonetsu no kisetsu)', anio=2007,
                          descripcion='evolve global deliverables', usuario=3))
     db.session.add(
@@ -53,7 +54,7 @@ def seed_data(db):
                          descripcion='exploit B2C channels', usuario=7))
 
     db.session.add(Cancion(titulo="Nothing Else Matters", minutos=4, segundos=40, interprete="Metallica", usuario=1))
-    db.session.add(Cancion(titulo="Black in Black", minutos=4, segundos=40, interprete="AC/DC", usuario=2))
+    db.session.add(Cancion(titulo="Black in Black", minutos=4, segundos=40, interprete="AC/DC", usuario=2, usuarios_compartidos=[main_test_user]))
 
     db.session.add(ComentarioModel( descripcion="Comentario de prueba numero 1", album_id=1, user_id=1))
     db.session.add(ComentarioModel( descripcion="Comentario de prueba numero 2", album_id=1, user_id=1))

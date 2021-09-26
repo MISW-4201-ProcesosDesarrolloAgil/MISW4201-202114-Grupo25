@@ -57,7 +57,7 @@ class Album(db.Model):
         return value
 
     @classmethod
-    def crear_nuevo_album(self, album):
+    def crear_nuevo_album(cls, album):
         """
         Añade un nuevo album a los albumes del usuario
         """
@@ -93,6 +93,7 @@ class AlbumSchema(SQLAlchemyAutoSchema):
          model = Album
          include_relationships = True
          load_instance = True
+         include_fk = True
 
 class UsuarioSchema(SQLAlchemyAutoSchema):
     class Meta:

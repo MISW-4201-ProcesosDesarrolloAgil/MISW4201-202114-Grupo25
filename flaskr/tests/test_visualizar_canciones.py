@@ -8,34 +8,29 @@ from flaskr.modelos import Cancion, Usuario
 from flaskr.tests.base_case import BaseCase, get_headers, get_access_token
 
 
-class TestVistaVisualizarCanciones(BaseCase):  # Siempre se debe heredar de BaseCase
+class TestVistaVisualizarCanciones(BaseCase):
     """ TestEjemploVista ejecuta tests de vista xxx """
 
     def test_visualizar_canciones(self):
         """
-        test_caso_1 prueba el caso de una canción que existe y es compartida
+        test_visualizar_canciones prueba el caso de una canción que existe y es compartida
+
+        Para esto se toma como referencia que en los datos de prueba cargado, se comparte el album de id2 con el usuario de id1
         """
-        token = get_access_token(self.app)  # Aplica unicamente para endpoints protegidos con jwt
+        token = get_access_token(self.app)
 
         headers = {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {token}"  # Aplica unicamente a endpoints protegidos con jwt
+            "Authorization": f"Bearer {token}"
         }
 
-        # Configuracion: Se comparte la cancion para probar posteriormente
-        response = self.app.post("cancion/1/usuarios-compartidos", headers=headers,
-                                 data=json.dumps({"usuarios_compartidos": ["Jacquette", "Cassi"]}))
-
-        endpoint = "/canciones"  # Reemplazar por endpoint a probar
+        endpoint = "/canciones"
         response = self.app.get(endpoint, headers=headers)
 
         self.assertEqual(200, response.status_code)
-        self.assertEqual(response[0].get('titulo'), "Urban Menace")
-        self.assertEqual(response[0].get('anio'), 1987)
-        self.assertEqual(response[0].get('descripcion'),"monetize mission-critical ROI")
-        self.assertEqual(response[0].get('usuario'), 1)
-
-    #def test_visualizar_canciones_no_existe(self):
+        self.assertEqual("Black in Black", response.json[-1].get('titulo'))
+        self.assertEqual("AC/DC",response.json[-1].get('interprete'))
+        self.assertEqual(2,response.json[-1].get('usuario'))
 
 
 
