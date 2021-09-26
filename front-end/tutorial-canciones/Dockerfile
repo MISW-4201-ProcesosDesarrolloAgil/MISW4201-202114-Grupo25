@@ -3,7 +3,8 @@ WORKDIR /app
 COPY . .
 
 ARG ENV_TYPE
-RUN npm ci && ng build --configuration ENV_TYPE
+RUN echo $ENV_TYPE
+RUN npm ci && ng build --configuration $ENV_TYPE
 
 FROM nginx:alpine
 COPY --from=my-app-build /app/dist/tutorial-canciones /usr/share/nginx/html
