@@ -135,7 +135,8 @@ class VistaAlbumsUsuario(Resource):
         return album_schema.dump(nuevo_album), 201
 
     @jwt_required()
-    def get(self, id_usuario):
+    def get(self):
+        id_usuario = get_jwt_identity()
         usuario = Usuario.query.get_or_404(id_usuario)
         return [album_schema.dump(al) for al in usuario.albumes]
 
@@ -322,24 +323,12 @@ class VistaAlbumesUsuariosCompartidos(Resource):
             muestra el listado de usuarios que tienen compartido un álbum
             :return: array[], status code 200
         """
-        if id_album > sys.maxsize:
-            return 'El campo id_album solo permite int como valor.',400
-
-        album = Album.query.get(id_album)
+        album = Album.query.filter_by(id=id_album, usuario=get_jwt_identity()).first()
         if album is None:
-            return "El álbum no existe.", 404
-    
-        [usuario_schema.dump(al) for al in album.usuarios_compartidos]
+            return "El album no existe o no pertenece al usuario", 400
 
-        current_user = Usuario.query.get_or_404(get_jwt_identity())
-        if album.usuario != current_user.id:
-            return 'Solo el dueño del álbum puede ver con quién lo compartió.',400
+        return {"usuarios_compartidos": [u.nombre for u in album.usuarios_compartidos]}
 
-        usuarios_compartidos = []
-        for i in range(len(album.usuarios_compartidos)):
-            usuarios_compartidos.append(album.usuarios_compartidos[i].nombre)
-
-        return {"usuarios_compartidos": usuarios_compartidos}
 
 def validaciones_de_usuarios_compartidos(origen, nuevos_usuarios_compartidos, usuarios_compartidos):
         if len(nuevos_usuarios_compartidos) == 0:
