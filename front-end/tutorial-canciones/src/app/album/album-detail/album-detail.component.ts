@@ -187,7 +187,7 @@ export class AlbumDetailComponent implements OnInit {
             this.usuariosCompartidos = '';
             this.toastr.success(
               'El aĺbum se compartió con tus amigos',
-              'Canción compartida'
+              'Álbum compartido'
             );
             this.consultarUsuariosCompartidos();
             return;

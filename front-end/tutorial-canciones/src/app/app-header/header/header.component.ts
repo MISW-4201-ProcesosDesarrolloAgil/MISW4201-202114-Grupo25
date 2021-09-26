@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { ModalComponent } from 'src/app/components/modal/modal.component';
+import { ModalConfig } from 'src/app/components/modal/modal.config';
 
 @Component({
   selector: 'app-header',
@@ -8,6 +10,12 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class HeaderComponent implements OnInit {
   userName: String = '';
+  @ViewChild('modal') private modal: ModalComponent;
+
+  public modalConfig: ModalConfig = {
+    modalTitle: 'Acerca de Ionic',
+    dismissButtonLabel: 'Aceptar'
+  };
 
   constructor(private routerPath: Router, private router: ActivatedRoute) {}
 
@@ -16,6 +24,10 @@ export class HeaderComponent implements OnInit {
     if (userName) {
       this.userName = userName;
     }
+  }
+
+  mostrarCreditos() {
+    return this.modal.open();
   }
 
   goTo(menu: string) {
