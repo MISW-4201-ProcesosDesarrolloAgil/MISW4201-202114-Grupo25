@@ -49,6 +49,7 @@ jobs:
         heroku_email: ${{ secrets.HEROKU_EMAIL }}
         usedocker: true
         appdir: front-end/tutorial-canciones
+        dontuseforce: true
         docker_build_args: |
           ENV_TYPE
       env:
@@ -82,8 +83,9 @@ jobs:
           heroku_app_name: ${{ secrets.HEROKU_APP_NAME_FRONT_QA }}
           heroku_email: ${{ secrets.HEROKU_EMAIL }}
           usedocker: true
+          dontuseforce: true
           appdir: front-end/tutorial-canciones
           docker_build_args: |
             ENV_TYPE
         env:
-            ENV_TYPE: qa
+            ENV_TYPE: production

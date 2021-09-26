@@ -18,7 +18,7 @@ export class AlbumService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     })
-    return this.http.get<Album[]>(`${this.backUrl}albumes`, {headers: headers})
+    return this.http.get<Album[]>(`${this.backUrl}/albumes`, {headers: headers})
   }
 
   getCancionesAlbum(idAlbum: number, token: string): Observable<Cancion[]>{
