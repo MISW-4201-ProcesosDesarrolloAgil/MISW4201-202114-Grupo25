@@ -6,7 +6,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 # Models
 from flaskr.modelos.comentarios import ComentarioModel, ComentarioSchema
-from flaskr.modelos.modelos import Album
+from flaskr.modelos.modelos import Album, Usuario
 
 # Utils
 from flaskr.modelos.database import db
@@ -33,9 +33,11 @@ class VistaComentarios(Resource):
         if len(descripcion) > 1000:
             return {"message": "el comentario no puede tener mas de 1000 caracteres"}, 400
 
-        album = Album.query.filter_by(id=album_id, usuario=user_id).first()
-        if album is None:
-            return {"message": "el album indicado no existe"}, 400
+        a_propio = Album.query.filter_by(usuario=user_id, id=album_id).first()
+        a_compartido = Album.query.filter_by(id=album_id).filter(Album.usuarios_compartidos.any(Usuario.id==user_id)).first()
+
+        if a_propio is None and a_compartido is None:
+            return {"message": "el album indicado no existe o no ha sido compartido al usuario que desea comentar"}, 400
 
         comentario = ComentarioModel(
             descripcion=descripcion,

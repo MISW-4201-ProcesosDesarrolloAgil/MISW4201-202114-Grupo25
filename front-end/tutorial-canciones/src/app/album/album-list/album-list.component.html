@@ -32,7 +32,12 @@
               [ngClass]="{ selected: i === indiceSeleccionado }"
             >
               <td>{{ album.titulo }}</td>
-              <td>{{ album.anio }}</td>
+              <td>
+                <div class="d-flex justify-content-end">
+                  <em *ngIf="album.compartido === true" class="bi bi-share shared_mark" title="Álbum compartido"></em>
+                  <span>{{ album.anio }}</span>
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>

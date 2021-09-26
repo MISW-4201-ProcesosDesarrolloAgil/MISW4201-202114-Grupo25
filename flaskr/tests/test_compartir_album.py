@@ -94,26 +94,19 @@ class TestVistaAlbumesUsuariosCompartidos(BaseCase):
         self.assertEqual(404, response.status_code)
         self.assertEqual("El usuario: Usuario-inexistente, no existe.", response.json)
 
-    def test_obtener_usuarios_compartidos_valor_id_album_no_soportado(self):
-        headers = get_headers(self.app)
-        endpoint = "album/9223372036854775808/usuarios-compartidos"
-        response = self.app.get(endpoint, headers=headers)
-        self.assertEqual(400, response.status_code)
-        self.assertEqual("El campo id_album solo permite int como valor.", response.json)
-
     def test_obtener_usuarios_compartidos_album_no_existe(self):
         headers = get_headers(self.app)
         endpoint = "album/21/usuarios-compartidos"
         response = self.app.get(endpoint, headers=headers)
-        self.assertEqual(404, response.status_code)
-        self.assertEqual("El álbum no existe.", response.json)
+        self.assertEqual(400, response.status_code)
+        self.assertEqual("El album no existe o no pertenece al usuario", response.json)
     
     def test_obtener_usuarios_compartidos_de_album_de_otro_usuario(self):
         headers = get_headers(self.app)
         endpoint = "album/2/usuarios-compartidos"
         response = self.app.get(endpoint, headers=headers)
         self.assertEqual(400, response.status_code)
-        self.assertEqual("Solo el dueño del álbum puede ver con quién lo compartió.", response.json)
+        self.assertEqual("El album no existe o no pertenece al usuario", response.json)
     
     def test_obtener_usuarios_compartidos(self):
         headers = get_headers(self.app)
